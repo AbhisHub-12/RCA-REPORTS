@@ -606,7 +606,7 @@
             <span class="download-icon">🖨️</span>
             <span>Print</span>
         </button>
-        <button class="share-btn" onclick="shareReport()" title="Share Report Link">
+        <button class="share-btn" onclick="shareReport(); console.log('Button clicked!');" title="Share Report Link">
             <span class="share-icon">🔗</span>
             <span>Share Link</span>
         </button>
@@ -614,10 +614,9 @@
 
     <!-- Share Modal -->
     <div id="shareModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-                                background:rgba(0,0,0,0.5); z-index:10000; align-items:center;
-                                justify-content:center;">
+                                background:rgba(0,0,0,0.5); z-index:10000;">
         <div style="background:white; border-radius:12px; padding:25px; max-width:500px;
-                    width:90%; max-height:80vh; overflow:auto; position:absolute;
+                    width:90%; max-height:80vh; overflow:auto; position:fixed;
                     top:50%; left:50%; transform:translate(-50%, -50%);">
             <button onclick="closeShareModal()"
                     style="position:absolute; top:15px; right:15px; background:none;
@@ -780,74 +779,56 @@
                             <div style="margin-bottom: 20px;">
                                 <h4 style="color: #1f2937;">📋 Summary of the Issue</h4>
                                 <div class="rca-content-box">
-                                    The customer, MoveInSync, experienced an issue with their Prometheus instance, which was expected to run smoothly but was instead being terminated due to insufficient resources. The Prometheus service was being OOMKilled while attempting to load Write-Ahead Log (WAL) files, which were too large for the current instance type <code class="inline-code">m5a.2xlarge</code>. This resulted in the service being unable to start properly, impacting monitoring capabilities. The environment was running on AWS, and the issue was critical as it affected the observability of their systems.<br>
+                                    The customer, MoveInSync, reported an issue with their Prometheus instance in the mis-prod-sg environment, which was down due to resource constraints. The expected behavior was for Prometheus to run smoothly, but it was observed to be repeatedly OOMKilled while attempting to load Write-Ahead Log (WAL) files. This was due to the instance type <code class="inline-code">m5a.2xlarge</code> not having sufficient CPU and memory resources to handle the large WAL files. The impact was a disruption in monitoring capabilities, as indicated by the last alert triggered on September 19 at 23:52.<br>
                                 </div>
                             </div>
 
                             <div style="margin-bottom: 20px;">
                                 <h4 style="color: #1f2937;">🔍 Steps to Debug</h4>
                                 <div class="rca-content-box">
-                                    1. **Rauneet Verma** observed that the Prometheus instance was being OOMKilled due to large WAL files:<br><br>
+                                    1. Rauneet Verma observed that the Prometheus instance was being OOMKilled while trying to load WAL files, indicating a resource constraint issue:<br><br>
    <div class="code-block-wrapper">
 <div class="code-header">📝 CODE</div>
 <pre class="code-block"><code>I can see that it is getting OOMKilled while trying to load the WAL files since WAL file is very huge.</code></pre>
 </div>
-   This indicated that the instance did not have enough memory to handle the WAL files.<br><br>
 
-2. **Rauneet Verma** checked the termination reason and confirmed it was due to OOMKilled:<br><br>
+2. The logs showed that the last state of the Prometheus pod was terminated due to being OOMKilled:<br><br>
    <div class="code-block-wrapper">
 <div class="code-header">📝 CODE</div>
 <pre class="code-block"><code>Last State:  Terminated
-   Reason:    OOMKilled</code></pre><br>
+   Reason:    OOMKilled<br>
+   Message:   :24:34.527Z caller=head.go:683 level=info component=tsdb msg=&quot;WAL segment loaded&quot; segment=35919 maxSegment=36317</code></pre><br>
 </div>
-   This confirmed that the termination was due to memory constraints.<br><br>
 
-3. **Rauneet Verma** reviewed the logs which showed the WAL segments being loaded:<br><br>
-   <div class="code-block-wrapper">
-<div class="code-header">📝 CODE</div>
-<pre class="code-block"><code>Message:   :24:34.527Z caller=head.go:683 level=info component=tsdb msg=&quot;WAL segment loaded&quot; segment=35919 maxSegment=36317</code></pre>
-</div>
-   This log entry indicated that the WAL files were being processed but not fully loaded due to resource limitations.<br><br>
-
-4. **Rauneet Verma** identified that the current instance type <code class="inline-code">m5a.2xlarge</code> was insufficient:<br>
+3. Rauneet Verma identified that the current instance type, <code class="inline-code">m5a.2xlarge</code>, lacked sufficient CPU and memory to load the WAL files completely:<br>
    <div class="code-block-wrapper">
 <div class="code-header">📝 BASH</div>
 <pre class="code-block"><code>which does not have sufficient amount of cpu and memory to completely load the WAL files.</code></pre>
 </div>
-   This suggested that upgrading the instance type could resolve the issue.<br><br>
+
+4. K Harshavardhan noted that the last alert was triggered on September 19 at 23:52, indicating the time frame of the issue:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 CODE</div>
+<pre class="code-block"><code>last alert  triggered on Sep 19 23:52</code></pre>
+</div>
                                 </div>
                             </div>
 
                             <div style="margin-bottom: 20px;">
                                 <h4 style="color: #1f2937;">✅ Steps to Resolution</h4>
                                 <div class="rca-content-box">
-                                    1. **Rauneet Verma** suggested increasing the instance size to provide more CPU and memory resources:<br><br>
-   <div class="code-block-wrapper">
-<div class="code-header">📝 BASH</div>
-<pre class="code-block"><code>which does not have sufficient amount of cpu and memory to completely load the WAL files.</code></pre>
-</div>
-   This was a temporary measure to ensure the WAL files could be loaded without being OOMKilled.<br><br>
+                                    1. Rauneet Verma suggested increasing the instance type to provide more CPU and memory resources to handle the large WAL files. This was a recommended action to prevent the OOMKilled state.<br><br>
 
-2. **Umer Beigh** confirmed that Prometheus was back up after the instance type was changed:<br><br>
-   <div class="code-block-wrapper">
-<div class="code-header">📝 CODE</div>
-<pre class="code-block"><code>prometheus is up now</code></pre>
-</div>
-   This indicated that the increased resources allowed Prometheus to load the WAL files successfully.<br><br>
+2. Umer Beigh confirmed that Prometheus was back up after the suggested changes were implemented, indicating that the customer likely increased the instance resources as advised.<br><br>
 
-3. **Umer Beigh** requested verification from **K Harshavardhan** to ensure the service was functioning correctly:<br><br>
-   <div class="code-block-wrapper">
-<div class="code-header">📝 CODE</div>
-<pre class="code-block"><code>@K Harshavardhan please check now</code></pre>
-</div>
-   This step was to confirm that the issue was resolved and the service was stable.<br><br>
+3. Umer Beigh requested K Harshavardhan to verify the status of Prometheus, ensuring that the service was operational and stable after the adjustments.<br><br>
                                 </div>
                             </div>
 
                             <div style="margin-bottom: 20px;">
                                 <h4 style="color: #1f2937;">🎯 Root Cause Analysis</h4>
                                 <div class="rca-content-box">
-                                    The likely root cause of the issue was the insufficient memory and CPU resources of the <code class="inline-code">m5a.2xlarge</code> instance type, which was unable to handle the large WAL files required by Prometheus. This led to the service being OOMKilled during startup. The problem was identified through log analysis showing repeated OOMKilled states and WAL loading messages. Increasing the instance size provided the necessary resources to load the WAL files, resolving the issue. Further investigation into WAL file management and instance sizing may be needed to prevent recurrence.<br>
+                                    The likely root cause of the issue was the insufficient CPU and memory resources of the <code class="inline-code">m5a.2xlarge</code> instance type, which was unable to handle the large WAL files required by Prometheus. This resulted in the Prometheus pod being OOMKilled repeatedly. The issue was identified through log analysis showing the OOMKilled state and the large size of the WAL files. Increasing the instance resources was suggested to resolve the problem, and the customer was advised to upgrade the instance type to prevent future occurrences.<br>
                                 </div>
                             </div>
                         </div>
@@ -1005,6 +986,7 @@
         // Share functionality
         function shareReport() {
             console.log('Share button clicked!'); // Debug log
+            alert('Share function called!'); // Temporary debug alert
 
             const modal = document.getElementById('shareModal');
             const urlInput = document.getElementById('shareUrl');
