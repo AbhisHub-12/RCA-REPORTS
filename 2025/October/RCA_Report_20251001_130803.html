@@ -668,6 +668,24 @@
                                    justify-content:center; gap:8px; transition:background 0.2s;">
                         <span>💬</span> WhatsApp
                     </button>
+                </div>            </div>
+            </div>
+
+            <div style="margin-bottom:20px;">
+                <label style="display:block; margin-bottom:8px; color:#6b7280; font-size:14px;">Alternative Link (HTML Preview):</label>
+                <div style="display:flex; gap:10px;">
+                    <input id="shareUrlBackup" type="text" readonly
+                           style="flex:1; padding:10px; border:1px solid #e5e7eb; border-radius:6px;
+                                  background:#f9fafb; font-family:monospace; font-size:13px;">
+                    <button id="copyBackupLinkBtn"
+                            style="padding:10px 20px; background:#059669; color:white;
+                                   border:none; border-radius:6px; cursor:pointer;
+                                   font-weight:500; white-space:nowrap;">
+                        Copy Backup
+                    </button>
+                </div>
+                <div style="margin-top:5px; color:#059669; font-size:12px;">
+                    ✅ This link works reliably for customer sharing
                 </div>
             </div>
 
@@ -1107,6 +1125,26 @@
             }
 
             urlInput.value = shareUrl;
+
+            // Also populate the backup URL (HTML Preview)
+            const backupUrlInput = document.getElementById('shareUrlBackup');
+            if (backupUrlInput) {
+                let backupUrl = '';
+                if (cloudUrls.github_repo && cloudUrls.github_repo.preview_url) {
+                    backupUrl = cloudUrls.github_repo.preview_url;
+                } else if (cloudUrls.github_gist && cloudUrls.github_gist.preview_url) {
+                    backupUrl = cloudUrls.github_gist.preview_url;
+                } else {
+                    const currentUrl = window.location.href;
+                    if (currentUrl.includes('github.io')) {
+                        const rawUrl = currentUrl.replace('abhishub-12.github.io/RCA-REPORTS/', 'raw.githubusercontent.com/AbhisHub-12/RCA-REPORTS/main/');
+                        backupUrl = 'https://htmlpreview.github.io/?' + rawUrl;
+                    } else {
+                        backupUrl = 'HTML Preview not available for local files';
+                    }
+                }
+                backupUrlInput.value = backupUrl;
+            }
             modal.style.display = 'block';
             console.log('Modal should now be visible'); // Debug log
         }
@@ -1172,6 +1210,25 @@
             // Open WhatsApp with pre-filled message
             window.open('https://wa.me/?text=' + text, '_blank');
         }
+        function copyBackupLink() {
+            const backupUrlInput = document.getElementById('shareUrlBackup');
+            backupUrlInput.select();
+            backupUrlInput.setSelectionRange(0, 99999);
+            try {
+                document.execCommand('copy');
+                const button = document.getElementById('copyBackupLinkBtn');
+                const originalText = button.innerHTML;
+                button.innerHTML = '✅ Copied!';
+                button.style.background = '#10b981';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = '#059669';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy backup link: ', err);
+                alert('Failed to copy to clipboard. Please copy manually.');
+            }
+        }
 
         // Close modal when clicking outside
         document.getElementById('shareModal').addEventListener('click', function(e) {
@@ -1232,6 +1289,11 @@
             const copyLinkBtn = document.getElementById('copyLinkBtn');
             if (copyLinkBtn) {
                 copyLinkBtn.addEventListener('click', copyShareLink);
+            }
+
+            const copyBackupLinkBtn = document.getElementById('copyBackupLinkBtn');
+            if (copyBackupLinkBtn) {
+                copyBackupLinkBtn.addEventListener('click', copyBackupLink);
             }
 
             const shareEmailBtn = document.getElementById('shareEmailBtn');
