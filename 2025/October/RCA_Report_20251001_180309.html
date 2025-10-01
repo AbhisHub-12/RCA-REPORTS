@@ -1,0 +1,2279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RCA Report - Last 7 days - All Customers</title>
+    <style>
+        body { font-family: -apple-system, Arial, sans-serif; margin: 0; background: #f8f9fa; }
+        
+        .header { 
+            background: linear-gradient(135deg, #7c3aed 0%, #14b8a6 100%); 
+            color: white; 
+            padding: 25px 40px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+        
+        .logo-text {
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: baseline;
+        }
+        
+        .logo-dot { color: #14b8a6; font-size: 2.5rem; margin: 0 2px; }
+        .logo-cloud { color: #14b8a6; }
+        
+        .divider {
+            width: 2px;
+            height: 40px;
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .report-title {
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+        
+        .header-right { display: flex; align-items: center; gap: 40px; }
+        .date-info { font-size: 0.95rem; opacity: 0.9; }
+        .stats { display: flex; gap: 30px; }
+        .stat { text-align: center; }
+        .stat-number { font-size: 1.8rem; font-weight: bold; color: #14b8a6; }
+        .stat-label { font-size: 0.75rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+        
+        .ai-badge {
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .search-section {
+            background: white;
+            padding: 25px;
+            margin: 30px auto;
+            max-width: 1400px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .search-container { display: flex; gap: 15px; align-items: center; }
+        .search-input { 
+            flex: 1; 
+            padding: 12px 20px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 8px; 
+            font-size: 1rem; 
+            outline: none; 
+        }
+        .search-input:focus { 
+            border-color: #7c3aed; 
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1); 
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px 40px; }
+        .customer-section { 
+            background: white; 
+            margin: 20px 0; 
+            border-radius: 12px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+            overflow: hidden; 
+        }
+        
+        table { width: 100%; border-collapse: collapse; table-layout: auto; word-wrap: break-word; }
+        th { 
+            background: #fafafa; 
+            padding: 12px 15px; 
+            text-align: left; 
+            font-size: 0.85rem; 
+            color: #6b7280; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
+        td { 
+            padding: 14px 15px; 
+            border-bottom: 1px solid #f3f4f6; 
+            color: #374151; 
+        }
+        
+        tr.expandable { cursor: pointer; }
+        tr.expandable:hover td { background: #f9fafb; }
+        
+        .expand-indicator { 
+            display: inline-block; 
+            margin-right: 8px; 
+            transition: transform 0.3s; 
+            color: #7c3aed; 
+        }
+        tr.expanded .expand-indicator { transform: rotate(90deg); }
+        
+        .status { 
+            padding: 5px 10px; 
+            border-radius: 6px; 
+            font-size: 0.8rem; 
+            font-weight: 500; 
+        }
+        .status-complete { background: #d1fae5; color: #065f46; }
+        .status-open { background: #fef3c7; color: #92400e; }
+        .status-progress { background: #dbeafe; color: #1e40af; }
+        .status-default { background: #f3f4f6; color: #6b7280; }
+        
+        
+        .ai-error-box {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+        }
+        
+        .slack-indicator {
+            display: inline-block;
+            padding: 3px 8px;
+            background: #4a1d96;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+        
+        /* Clean Code Block Styling */
+        .code-block-wrapper {
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            max-width: 100%;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .code-header {
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+            color: #f9fafb;
+            padding: 12px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #6b7280;
+        }
+
+        .code-block {
+            margin: 0;
+            padding: 20px;
+            background: #1f2937;
+            overflow: hidden;
+            max-width: 100%;
+            word-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        .code-block code {
+            color: #f3f4f6;
+            font-family: 'SF Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-break: break-all;
+            overflow-wrap: break-word;
+            display: block;
+            max-width: 100%;
+        }
+
+        /* Clean Inline Code */
+        .inline-code {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.9em;
+            font-weight: 600;
+            white-space: nowrap;
+            border: 1px solid #fecaca;
+        }
+
+        /* Link Styles */
+        .markdown-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            transition: all 0.2s;
+            display: inline-block;
+        }
+
+        .markdown-link:hover {
+            color: #1d4ed8;
+            background: #dbeafe;
+            border-color: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .auto-link {
+            color: #7c3aed;
+            text-decoration: none;
+            font-size: 0.95em;
+            word-break: break-all;
+            padding: 3px 6px;
+            border-radius: 4px;
+            background: #f3e8ff;
+            border: 1px solid #d8b4fe;
+        }
+
+        .auto-link:hover {
+            color: #5b21b6;
+            background: #e9d5ff;
+        }
+
+        /* RCA Content Box */
+        .rca-content-box {
+            padding: 16px;
+            background: #f0fdf4;
+            border-left: 4px solid #10b981;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #1f2937;
+            min-height: 60px;
+        }
+
+        .rca-content-box .code-block-wrapper {
+            margin: 16px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .rca-empty {
+            color: #9ca3af;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            background: #f9fafb;
+            border: 2px dashed #e5e7eb;
+            border-radius: 6px;
+        }
+
+        /* Original pre styling for non-code blocks */
+        pre {
+            background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%);
+            border: 1px solid #d1d5db;
+            border-left: 4px solid #7c3aed;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 16px 0;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        
+        /* Clean code blocks without content labels */
+        
+        code {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            background: #e5e7eb;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #dc2626;
+            font-weight: 500;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            border-radius: 0;
+            color: #1f2937;
+            font-weight: 400;
+            display: block;
+            margin-top: 8px;
+        }
+        
+        /* Enhanced syntax highlighting */
+        .language-bash code,
+        .language-shell code,
+        .language-console code {
+            color: #059669;
+            font-weight: 500;
+        }
+        
+        .language-log code,
+        .language-text code {
+            color: #374151;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .language-json code {
+            color: #0891b2;
+        }
+        
+        .language-yaml code,
+        .language-yml code {
+            color: #ea580c;
+        }
+        
+        /* Download Button Styling */
+        .download-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .download-btn, .share-btn {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 120px;
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+            background: linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+        
+        .download-icon {
+            font-size: 1.1rem;
+        }
+        
+        
+        /* Comprehensive Print Styles for PDF Generation */
+        @media print {
+            /* Page setup for proper PDF sizing */
+            @page {
+                size: A4;
+                margin: 10mm 15mm 10mm 15mm;
+            }
+            
+            /* CRITICAL: Force all hidden content to show when printing */
+            * {
+                overflow: visible !important;
+            }
+            
+            /* Reset body for print */
+            body {
+                margin: 0;
+                padding: 0;
+                font-size: 10pt !important;
+                line-height: 1.3 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            
+            /* Scale down the entire content to fit */
+            .header {
+                padding: 15px 20px !important;
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+            
+            .header-content {
+                max-width: 100% !important;
+                font-size: 0.9em !important;
+            }
+            
+            .logo-text {
+                font-size: 1.3rem !important;
+            }
+            
+            .report-title {
+                font-size: 1.1rem !important;
+            }
+            
+            .stat-number {
+                font-size: 1.3rem !important;
+            }
+            
+            /* Hide interactive elements */
+            .download-container,
+            .search-section {
+                display: none !important;
+            }
+            
+            /* Adjust container for print */
+            .container {
+                max-width: 100% !important;
+                padding: 10px !important;
+                margin: 0 !important;
+            }
+            
+            /* Ensure tables fit on page */
+            .customer-section {
+                page-break-inside: avoid;
+                break-inside: avoid;
+                margin: 10px 0 !important;
+            }
+            
+            table {
+                width: 100% !important;
+                font-size: 0.85em !important;
+            }
+            
+            th, td {
+                padding: 8px 10px !important;
+                font-size: 0.85em !important;
+            }
+            
+            /* Force all ticket details to be visible when printing */
+            tr[id^="details_"] {
+                display: table-row !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                page-break-inside: avoid;
+            }
+            
+            /* Override any inline styles */
+            tr[style*="display: none"] {
+                display: table-row !important;
+            }
+            
+            /* Adjust expanded content for print */
+            tr[id^="details_"] > td > div {
+                padding: 15px 30px !important;
+            }
+            
+            /* Make code blocks smaller but readable */
+            pre {
+                padding: 10px !important;
+                margin: 8px 0 !important;
+                font-size: 0.75em !important;
+                page-break-inside: avoid;
+                max-width: 100% !important;
+                overflow: visible !important;
+                white-space: pre-wrap !important;
+                word-wrap: break-word !important;
+            }
+            
+            pre code {
+                font-size: 0.85em !important;
+                white-space: pre-wrap !important;
+                word-break: break-word !important;
+            }
+            
+            /* Ensure all sections and content are visible */
+            .expand-indicator {
+                display: none !important;
+            }
+            
+            /* Force all collapsed content to be visible */
+            [style*="display: none"],
+            [style*="display:none"] {
+                display: block !important;
+            }
+            
+            /* Ensure detail rows are visible */
+            tr[id*="details"] {
+                display: table-row !important;
+            }
+            
+            /* Make sure all RCA content sections are visible */
+            div[style*="background: #f9fafb"] {
+                display: block !important;
+                visibility: visible !important;
+            }
+            
+            /* Adjust section headers */
+            h2 {
+                font-size: 1.2em !important;
+                margin: 10px 0 !important;
+                page-break-after: avoid;
+            }
+            
+            h4 {
+                font-size: 1em !important;
+                margin: 8px 0 !important;
+                page-break-after: avoid;
+            }
+            
+            /* Ensure content boxes fit */
+            div[style*="padding: 12px"] {
+                padding: 8px !important;
+                margin: 5px 0 !important;
+            }
+            
+            /* Prevent page breaks in critical areas */
+            .customer-section > div:first-child,
+            .customer-section table {
+                page-break-after: avoid;
+            }
+            
+            /* Scale down any oversized content */
+            * {
+                max-width: 100% !important;
+            }
+            
+            /* Ensure background colors print */
+            .status,
+            .ai-badge,
+            pre {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+        
+        /* Special styling for error logs */
+        pre:has(code:contains("error")),
+        pre:has(code:contains("Error")),
+        pre:has(code:contains("GRPC error")) {
+            border-left-color: #dc2626;
+            background: linear-gradient(135deg, #fef2f2 0%, #fef7f7 100%);
+        }
+        
+        /* Removed error log labels */
+        
+        /* Special styling for mount/config logs */
+        pre:has(code:contains("mount")),
+        pre:has(code:contains("Mount")) {
+            border-left-color: #f59e0b;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        }
+        
+        /* Removed mount log labels */
+        
+        /* Special styling for Java/JVM parameters */
+        pre:has(code:contains("-server")),
+        pre:has(code:contains("-Xms")) {
+            border-left-color: #7c3aed;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        }
+        
+        /* Removed Java config labels */
+
+        /* Image Viewer Modal Styles */
+        .image-viewer-modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            cursor: pointer;
+        }
+
+        .image-viewer-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 95vw;
+            max-height: 95vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .image-viewer-image {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-viewer-title {
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .image-viewer-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10001;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .image-viewer-close:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Download and Share Buttons -->
+    <div class="download-container">
+        <button class="download-btn" id="printBtn" title="Print / Save as PDF">
+            <span class="download-icon">🖨️</span>
+            <span>Print</span>
+        </button>
+        <button class="share-btn" id="shareReportBtn" title="Share Report Link">
+            <span class="share-icon">🔗</span>
+            <span>Share Link</span>
+        </button>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="shareModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+                                background:rgba(0,0,0,0.5); z-index:10000;">
+        <div style="background:white; border-radius:12px; padding:25px; max-width:500px;
+                    width:90%; max-height:80vh; overflow:auto; position:fixed;
+                    top:50%; left:50%; transform:translate(-50%, -50%);">
+            <button id="closeModalBtn"
+                    style="position:absolute; top:15px; right:15px; background:none;
+                           border:none; font-size:24px; cursor:pointer; color:#6b7280;">×</button>
+            <h3 style="margin:0 0 20px 0; color:#374151;">Share RCA Report</h3>
+
+            <div style="margin-bottom:20px;">
+                <label style="display:block; margin-bottom:8px; color:#6b7280; font-size:14px;">Report Link:</label>
+                <div style="display:flex; gap:10px;">
+                    <input id="shareUrl" type="text" readonly
+                           style="flex:1; padding:10px; border:1px solid #e5e7eb; border-radius:6px;
+                                  background:#f9fafb; font-family:monospace; font-size:13px;">
+                    <button id="copyLinkBtn"
+                            style="padding:10px 20px; background:#7c3aed; color:white;
+                                   border:none; border-radius:6px; cursor:pointer;
+                                   font-weight:500; white-space:nowrap;">
+                        Copy Link
+                    </button>
+                </div>
+                <div id="copySuccess" style="margin-top:10px; color:#10b981; font-size:14px; display:none;">
+                    ✅ Link copied to clipboard!
+                </div>
+            </div>
+
+            <div style="margin-bottom:20px;">
+                <label style="display:block; margin-bottom:12px; color:#6b7280; font-size:14px;">Quick Share:</label>
+                <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px;">
+                    <button id="shareEmailBtn"
+                            style="padding:12px; background:#f3f4f6; border:1px solid #e5e7eb;
+                                   border-radius:6px; cursor:pointer; display:flex; align-items:center;
+                                   justify-content:center; gap:8px; transition:background 0.2s;">
+                        <span>📧</span> Email
+                    </button>
+                    <button id="shareSlackBtn"
+                            style="padding:12px; background:#f3f4f6; border:1px solid #e5e7eb;
+                                   border-radius:6px; cursor:pointer; display:flex; align-items:center;
+                                   justify-content:center; gap:8px; transition:background 0.2s;">
+                        <span>💬</span> Slack
+                    </button>
+                    <button id="shareTeamsBtn"
+                            style="padding:12px; background:#f3f4f6; border:1px solid #e5e7eb;
+                                   border-radius:6px; cursor:pointer; display:flex; align-items:center;
+                                   justify-content:center; gap:8px; transition:background 0.2s;">
+                        <span>👥</span> Teams
+                    </button>
+                    <button id="shareWhatsAppBtn"
+                            style="padding:12px; background:#f3f4f6; border:1px solid #e5e7eb;
+                                   border-radius:6px; cursor:pointer; display:flex; align-items:center;
+                                   justify-content:center; gap:8px; transition:background 0.2s;">
+                        <span>💬</span> WhatsApp
+                    </button>
+                </div>
+            </div>
+
+            <div id="backupSection" style="margin-bottom:20px;">
+                <label style="display:block; margin-bottom:8px; color:#6b7280; font-size:14px;">Alternative Link (HTML Preview):</label>
+                <div style="display:flex; gap:10px;">
+                    <input id="shareUrlBackup" type="text" readonly
+                           style="flex:1; padding:10px; border:1px solid #e5e7eb; border-radius:6px;
+                                  background:#f9fafb; font-family:monospace; font-size:13px;">
+                    <button id="copyBackupLinkBtn"
+                            style="padding:10px 20px; background:#059669; color:white;
+                                   border:none; border-radius:6px; cursor:pointer;
+                                   font-weight:500; white-space:nowrap;">
+                        Copy Backup
+                    </button>
+                </div>
+                <div style="margin-top:5px; color:#059669; font-size:12px;">
+                    ✅ This link works reliably for customer sharing
+                </div>
+            </div>
+
+            <div style="padding:15px; background:#f0f9ff; border:1px solid #bae6fd;
+                        border-radius:6px; margin-top:20px;">
+                <p style="margin:0; color:#0369a1; font-size:14px; line-height:1.5;">
+                    💡 <strong>Tip:</strong> This report can be opened directly in any browser.
+                    The recipient will see the full interactive report with all features.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Viewer Modal -->
+    <div id="imageViewerModal" class="image-viewer-modal" onclick="closeImageViewer()">
+        <div class="image-viewer-close" onclick="closeImageViewer()">&times;</div>
+        <div class="image-viewer-content" onclick="event.stopPropagation()">
+            <img id="imageViewerImage" class="image-viewer-image" src="" alt="">
+            <div id="imageViewerTitle" class="image-viewer-title"></div>
+        </div>
+    </div>
+
+    <div class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo-section">
+                    <div class="logo-text">
+                        <span style="color: white;">Facets</span>
+                        <span class="logo-dot">.</span>
+                        <span class="logo-cloud">cloud</span>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="report-title">
+                        RCA Report
+                        <span class="ai-badge">✨ AI Enhanced</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div>
+                    <div class="date-info">📅 Sep 24 - Oct 01, 2025</div>
+                    <div class="date-info" style="margin-top: 5px;">Last 7 days - All Customers</div>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number">11</div>
+                        <div class="stat-label">Total Tickets</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">7</div>
+                        <div class="stat-label">Customers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="search-section">
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput"
+                   placeholder="Search by ticket title, customer name, or status...">
+            <button class="search-btn" id="searchBtn"
+                    style="background: #7c3aed; color: white; padding: 12px 30px;
+                           border: none; border-radius: 8px; cursor: pointer; margin: 0 5px;">
+                🔍 Search
+            </button>
+            <button class="clear-btn" id="clearBtn"
+                    style="background: #dc2626; color: white; padding: 12px 30px;
+                           border: none; border-radius: 8px; cursor: pointer; margin: 0 5px;">
+                🔄 Clear
+            </button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="customer-section">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #f3f4f6 100%); 
+                        padding: 20px 25px; display: flex; justify-content: space-between; align-items: center;">
+                <h2>Integrtr</h2>
+                <span style="background: #14b8a6; color: white; padding: 6px 14px; 
+                           border-radius: 20px; font-size: 0.85rem; font-weight: 500;">
+                    1 tickets
+                </span>
+            </div>
+            <table>
+                <tr>
+                    <th width="50">#</th>
+                    <th>Title</th>
+                    <th width="120">ClickUp</th>
+                    <th width="100">Date</th>
+                    <th width="120">Status</th>
+                    <th width="150">Owner</th>
+                </tr>
+                <tr class="expandable" data-ticket-id="Integrtr_1">
+                    <td><span class="expand-indicator">▶</span> 1</td>
+                    <td>Export blueprint diagram as PDF</td>
+                    <td><a href="https://app.clickup.com/t/86d0e3xgd" 
+                           style="color: #7c3aed; text-decoration: none; padding: 5px 12px; 
+                                  border: 1px solid #7c3aed; border-radius: 6px; display: inline-block; font-size: 0.85rem;"
+                           target="_blank" onclick="event.stopPropagation()">View</a></td>
+                    <td>2025-09-25</td>
+                    <td><span class="status status-open">Open</span></td>
+                    <td>Rauneet Verma</td>
+                </tr>
+                <tr id="details_Integrtr_1" style="display: none;">
+                    <td colspan="6" style="padding: 0;">
+                        <div style="background: #f9fafb; padding: 20px 60px; border-left: 4px solid #7c3aed;">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; 
+                                        padding: 15px; background: white; border-radius: 6px;">
+                                <div><strong>Customer:</strong><br>Integrtr</div>
+                                <div><strong>Date:</strong><br>2025-09-25</div>
+                                <div><strong>Status:</strong><br>Open</div>
+                                <div><strong>Owner:</strong><br>Rauneet Verma</div>
+                                <div><strong>ClickUp ID:</strong><br>86d0e3xgd</div>
+                                <div><strong>Analysis:</strong><br>✅ AI Generated</div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📋 Summary of the Issue</h4>
+                                <div class="rca-content-box">
+                                    <div class="rca-empty">No summary data available</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🔍 Steps to Debug</h4>
+                                <div class="rca-content-box">
+                                    <div class="rca-empty">No debug steps found</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">✅ Steps to Resolution</h4>
+                                <div class="rca-content-box">
+                                    <div class="rca-empty">No resolution data available</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🎯 Root Cause Analysis</h4>
+                                <div class="rca-content-box">
+                                    <div class="rca-empty">Root cause not identified</div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr></table></div>
+        <div class="customer-section">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #f3f4f6 100%); 
+                        padding: 20px 25px; display: flex; justify-content: space-between; align-items: center;">
+                <h2>Niyo</h2>
+                <span style="background: #14b8a6; color: white; padding: 6px 14px; 
+                           border-radius: 20px; font-size: 0.85rem; font-weight: 500;">
+                    1 tickets
+                </span>
+            </div>
+            <table>
+                <tr>
+                    <th width="50">#</th>
+                    <th>Title</th>
+                    <th width="120">ClickUp</th>
+                    <th width="100">Date</th>
+                    <th width="120">Status</th>
+                    <th width="150">Owner</th>
+                </tr>
+                <tr class="expandable" data-ticket-id="Niyo_1">
+                    <td><span class="expand-indicator">▶</span> 1</td>
+                    <td>SAML Integration for Facets controlplane</td>
+                    <td><a href="https://app.clickup.com/t/86d0f68h1" 
+                           style="color: #7c3aed; text-decoration: none; padding: 5px 12px; 
+                                  border: 1px solid #7c3aed; border-radius: 6px; display: inline-block; font-size: 0.85rem;"
+                           target="_blank" onclick="event.stopPropagation()">View</a></td>
+                    <td>2025-09-29</td>
+                    <td><span class="status status-open">Open</span></td>
+                    <td>Shreenivas Rathi</td>
+                </tr>
+                <tr id="details_Niyo_1" style="display: none;">
+                    <td colspan="6" style="padding: 0;">
+                        <div style="background: #f9fafb; padding: 20px 60px; border-left: 4px solid #7c3aed;">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; 
+                                        padding: 15px; background: white; border-radius: 6px;">
+                                <div><strong>Customer:</strong><br>Niyo</div>
+                                <div><strong>Date:</strong><br>2025-09-29</div>
+                                <div><strong>Status:</strong><br>Open</div>
+                                <div><strong>Owner:</strong><br>Shreenivas Rathi</div>
+                                <div><strong>ClickUp ID:</strong><br>86d0f68h1</div>
+                                <div><strong>Analysis:</strong><br>✅ AI Generated</div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📋 Summary of the Issue</h4>
+                                <div class="rca-content-box">
+                                    The customer, Niyo, was attempting to integrate SAML authentication for their Facets controlplane. The expected outcome was a seamless integration allowing users to authenticate via SAML without issues. However, the integration did not proceed as expected, leading to authentication failures. The environment involved was the Facets controlplane, and the issue impacted user access to the system, potentially affecting operations that rely on authenticated access. The customer reported the issue, seeking assistance to resolve the integration problem.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🔍 Steps to Debug</h4>
+                                <div class="rca-content-box">
+                                    1. Shreenivas Rathi initiated the debugging process by reviewing the SAML configuration settings on the Facets controlplane. The goal was to ensure that all necessary parameters were correctly set to facilitate SAML authentication.<br><br>
+
+2. The team examined the SAML metadata provided by the identity provider to verify its correctness and compatibility with the Facets controlplane. This step was crucial to identify any discrepancies that might cause authentication failures.<br><br>
+
+3. Logs from the Facets controlplane were reviewed to identify any error messages or warnings related to SAML authentication attempts. This included checking for any misconfigurations or missing attributes that could lead to failures.<br><br>
+
+4. The team suggested checking the network connectivity between the Facets controlplane and the identity provider to rule out any network-related issues that might affect SAML requests and responses.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">✅ Steps to Resolution</h4>
+                                <div class="rca-content-box">
+                                    1. The team recommended updating the SAML configuration on the Facets controlplane to ensure all required attributes were correctly mapped. This included verifying the entity ID, assertion consumer service URL, and other critical parameters.<br><br>
+
+2. It was advised to regenerate and re-upload the SAML metadata file to the identity provider to ensure it was up-to-date and correctly formatted. This step aimed to resolve any potential mismatches between the service provider and identity provider configurations.<br><br>
+
+3. The customer was guided to perform a test authentication to verify if the changes resolved the issue. This involved attempting to log in using SAML to confirm that the integration was functioning as expected.<br><br>
+
+4. The team suggested monitoring the authentication logs post-implementation to ensure no further errors occurred and to validate the stability of the SAML integration.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🎯 Root Cause Analysis</h4>
+                                <div class="rca-content-box">
+                                    The likely root cause of the issue was a misconfiguration in the SAML settings on the Facets controlplane. This included incorrect or outdated metadata that did not align with the identity provider's configuration, leading to authentication failures. The investigation revealed that the SAML attributes and endpoints needed to be accurately configured to ensure successful communication between the service provider and identity provider. Further investigation into the network connectivity and metadata compatibility was suggested to confirm the resolution.<br><br>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr></table></div>
+        <div class="customer-section">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #f3f4f6 100%); 
+                        padding: 20px 25px; display: flex; justify-content: space-between; align-items: center;">
+                <h2>PSV - Capillary</h2>
+                <span style="background: #14b8a6; color: white; padding: 6px 14px; 
+                           border-radius: 20px; font-size: 0.85rem; font-weight: 500;">
+                    1 tickets
+                </span>
+            </div>
+            <table>
+                <tr>
+                    <th width="50">#</th>
+                    <th>Title</th>
+                    <th width="120">ClickUp</th>
+                    <th width="100">Date</th>
+                    <th width="120">Status</th>
+                    <th width="150">Owner</th>
+                </tr>
+                <tr class="expandable" data-ticket-id="PSV_-_Capillary_1">
+                    <td><span class="expand-indicator">▶</span> 1</td>
+                    <td>error while deleting one of the resource in blueprint<span class="slack-indicator">Slack Thread</span></td>
+                    <td><a href="https://app.clickup.com/t/86d0f50n3" 
+                           style="color: #7c3aed; text-decoration: none; padding: 5px 12px; 
+                                  border: 1px solid #7c3aed; border-radius: 6px; display: inline-block; font-size: 0.85rem;"
+                           target="_blank" onclick="event.stopPropagation()">View</a></td>
+                    <td>2025-09-29</td>
+                    <td><span class="status status-default">customer side fix</span></td>
+                    <td>Rauneet Verma</td>
+                </tr>
+                <tr id="details_PSV_-_Capillary_1" style="display: none;">
+                    <td colspan="6" style="padding: 0;">
+                        <div style="background: #f9fafb; padding: 20px 60px; border-left: 4px solid #7c3aed;">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; 
+                                        padding: 15px; background: white; border-radius: 6px;">
+                                <div><strong>Customer:</strong><br>PSV - Capillary</div>
+                                <div><strong>Date:</strong><br>2025-09-29</div>
+                                <div><strong>Status:</strong><br>customer side fix</div>
+                                <div><strong>Owner:</strong><br>Rauneet Verma</div>
+                                <div><strong>ClickUp ID:</strong><br>86d0f50n3</div>
+                                <div><strong>Analysis:</strong><br>✅ AI Generated</div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📋 Summary of the Issue</h4>
+                                <div class="rca-content-box">
+                                    The customer, PSV - Capillary, encountered an issue while attempting to delete a resource within a blueprint. The expected outcome was the successful deletion of the resource, but instead, an error occurred due to a misconfiguration. Specifically, the <code class="inline-code">strapi-adac-deployment</code> service blueprint was mistakenly overridden with a CloudFront JSON configuration. This error prevented the proper update and deletion of resources, impacting the deployment process. The environment involved included deployment services and CloudFront distributions, which are critical components in their infrastructure.<br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🔍 Steps to Debug</h4>
+                                <div class="rca-content-box">
+                                    1. On 09/29 at 13:20, a team member reported an error while attempting to delete a resource in the blueprint. This initiated the debugging process to identify the root cause of the issue.<br><br>
+
+2. At 13:25, the team member identified that there was an error involving the resources named <code class="inline-code">strapi-adac</code>. The <code class="inline-code">strapi-adac-deployment</code> service blueprint was accidentally overridden with a CloudFront JSON configuration, which was not intended.<br>
+
+3. At 13:36, the team suggested updating the deployment configuration with the correct kind service from the Git repository to rectify the misconfiguration.<br><br>
+
+4. At 13:48, the team member attempted to update the configuration but faced difficulties, as indicated by the inability to update and the suggestion to delete the resources in the blueprint.<br><br>
+
+5. At 14:01, it was noted that after performing a selective release, the changes were not reflecting as expected, indicating that the issue persisted despite attempts to resolve it through configuration updates.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">✅ Steps to Resolution</h4>
+                                <div class="rca-content-box">
+                                    1. Rauneet Verma confirmed that the issue was customer was provided guidance for deleting the resource from the Git repository. This action was necessary to remove the incorrect configuration that was causing the deployment issues.<br><br>
+
+2. The team was advised to update the deployment configuration with the correct kind service from Git, ensuring that the blueprint accurately reflected the intended deployment setup.<br><br>
+
+3. It was recommended to perform a selective release, focusing on the specific service to ensure that the correct configurations were applied and reflected in the deployment environment.<br><br>
+
+4. The customer was provided guidance to ensure that future configurations are carefully managed to prevent similar issues, emphasizing the importance of verifying JSON configurations before applying them to critical services.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🎯 Root Cause Analysis</h4>
+                                <div class="rca-content-box">
+                                    The likely root cause of the issue was a misconfiguration where the <code class="inline-code">strapi-adac-deployment</code> service blueprint was mistakenly overridden with a CloudFront JSON configuration. This error occurred due to an accidental override during configuration updates, which led to deployment issues. The problem was identified through team discussions and was resolved by deleting the incorrect resource from the Git repository. Further investigation into configuration management practices is recommended to prevent similar occurrences in the future.<br>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">💬 Slack Thread Images</h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 15px 0;">
+                                    <div style="border: 2px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        <img src="https://files.slack.com/files-pri/T0188PWDTJA-F09H6KAAH55/image.png" alt="image.png" style="width: 100%; height: 200px; object-fit: cover; cursor: pointer;" onclick="openImageViewer('https://files.slack.com/files-pri/T0188PWDTJA-F09H6KAAH55/image.png', 'image.png')">
+                                        <div style="padding: 12px; background: #f9fafb; border-top: 1px solid #e5e7eb;">
+                                            <div style="font-weight: 600; color: #374151; margin-bottom: 4px;">image.png</div>
+                                            <div style="color: #6b7280; font-size: 0.8rem; margin-bottom: 4px;">By: Unknown</div>
+                                            <a href="https://files.slack.com/files-pri/T0188PWDTJA-F09H6KAAH55/image.png" target="_blank" style="color: #7c3aed; text-decoration: none; font-size: 0.85rem;">View Full Size →</a>
+                                        </div>
+                                    </div>
+                                    <div style="border: 2px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        <img src="https://files.slack.com/files-pri/T0188PWDTJA-F09HG9FGEN7/image.png" alt="image.png" style="width: 100%; height: 200px; object-fit: cover; cursor: pointer;" onclick="openImageViewer('https://files.slack.com/files-pri/T0188PWDTJA-F09HG9FGEN7/image.png', 'image.png')">
+                                        <div style="padding: 12px; background: #f9fafb; border-top: 1px solid #e5e7eb;">
+                                            <div style="font-weight: 600; color: #374151; margin-bottom: 4px;">image.png</div>
+                                            <div style="color: #6b7280; font-size: 0.8rem; margin-bottom: 4px;">By: Unknown</div>
+                                            <a href="https://files.slack.com/files-pri/T0188PWDTJA-F09HG9FGEN7/image.png" target="_blank" style="color: #7c3aed; text-decoration: none; font-size: 0.85rem;">View Full Size →</a>
+                                        </div>
+                                    </div>
+                                    <div style="border: 2px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        <img src="https://files.slack.com/files-pri/T0188PWDTJA-F09HSP8QHU4/image.png" alt="image.png" style="width: 100%; height: 200px; object-fit: cover; cursor: pointer;" onclick="openImageViewer('https://files.slack.com/files-pri/T0188PWDTJA-F09HSP8QHU4/image.png', 'image.png')">
+                                        <div style="padding: 12px; background: #f9fafb; border-top: 1px solid #e5e7eb;">
+                                            <div style="font-weight: 600; color: #374151; margin-bottom: 4px;">image.png</div>
+                                            <div style="color: #6b7280; font-size: 0.8rem; margin-bottom: 4px;">By: Unknown</div>
+                                            <a href="https://files.slack.com/files-pri/T0188PWDTJA-F09HSP8QHU4/image.png" target="_blank" style="color: #7c3aed; text-decoration: none; font-size: 0.85rem;">View Full Size →</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr></table></div>
+        <div class="customer-section">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #f3f4f6 100%); 
+                        padding: 20px 25px; display: flex; justify-content: space-between; align-items: center;">
+                <h2>Vymo</h2>
+                <span style="background: #14b8a6; color: white; padding: 6px 14px; 
+                           border-radius: 20px; font-size: 0.85rem; font-weight: 500;">
+                    1 tickets
+                </span>
+            </div>
+            <table>
+                <tr>
+                    <th width="50">#</th>
+                    <th>Title</th>
+                    <th width="120">ClickUp</th>
+                    <th width="100">Date</th>
+                    <th width="120">Status</th>
+                    <th width="150">Owner</th>
+                </tr>
+                <tr class="expandable" data-ticket-id="Vymo_1">
+                    <td><span class="expand-indicator">▶</span> 1</td>
+                    <td>ecr-token-refresher-vymo-ecr pods are not running in aciprod, auscprod, amrprod and apjprod</td>
+                    <td><a href="https://app.clickup.com/t/86d0f37yf" 
+                           style="color: #7c3aed; text-decoration: none; padding: 5px 12px; 
+                                  border: 1px solid #7c3aed; border-radius: 6px; display: inline-block; font-size: 0.85rem;"
+                           target="_blank" onclick="event.stopPropagation()">View</a></td>
+                    <td>2025-09-29</td>
+                    <td><span class="status status-default">needs customer response</span></td>
+                    <td>Debarshi Mullick</td>
+                </tr>
+                <tr id="details_Vymo_1" style="display: none;">
+                    <td colspan="6" style="padding: 0;">
+                        <div style="background: #f9fafb; padding: 20px 60px; border-left: 4px solid #7c3aed;">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; 
+                                        padding: 15px; background: white; border-radius: 6px;">
+                                <div><strong>Customer:</strong><br>Vymo</div>
+                                <div><strong>Date:</strong><br>2025-09-29</div>
+                                <div><strong>Status:</strong><br>needs customer response</div>
+                                <div><strong>Owner:</strong><br>Debarshi Mullick</div>
+                                <div><strong>ClickUp ID:</strong><br>86d0f37yf</div>
+                                <div><strong>Analysis:</strong><br>✅ AI Generated</div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📋 Summary of the Issue</h4>
+                                <div class="rca-content-box">
+                                    The customer, Vymo, reported that the <code class="inline-code">ecr-token-refresher-vymo-ecr</code> pods were not running in several production environments: <code class="inline-code">aciprod</code>, <code class="inline-code">auscprod</code>, <code class="inline-code">amrprod</code>, and <code class="inline-code">apjprod</code>. The expected behavior was for these pods to be operational, ensuring seamless access to ECR tokens for container operations. However, the pods were failing to start, which could potentially disrupt the deployment and management of containerized applications across these environments. This issue was critical due to its impact on production systems, and it required immediate attention to restore normal operations.<br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🔍 Steps to Debug</h4>
+                                <div class="rca-content-box">
+                                    1. Debarshi Mullick initiated the investigation by checking the status of the pods in the affected environments. He used the following command to list the pods:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 BASH</div>
+<pre class="code-block"><code>kubectl get pods -n &lt;namespace&gt;</code></pre>
+</div>
+   This command was executed to verify the current state of the pods and identify any error messages or status indicators that could provide insight into the issue.<br><br>
+
+2. The team observed that the pods were in a 'CrashLoopBackOff' state. This status suggested that the pods were repeatedly failing to start and were being restarted by the Kubernetes system. The logs were checked using:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 BASH</div>
+<pre class="code-block"><code>kubectl logs &lt;pod-name&gt; -n &lt;namespace&gt;</code></pre>
+</div>
+   The logs revealed errors related to authentication failures when attempting to refresh ECR tokens.<br><br>
+
+3. It was suggested to verify the IAM roles and permissions associated with the Kubernetes service account used by the pods. This step was crucial to ensure that the necessary permissions were in place for accessing ECR and refreshing tokens.<br><br>
+
+4. The team also checked the configuration of the <code class="inline-code">ecr-token-refresher</code> application to ensure that it was correctly set up to authenticate with AWS ECR. This involved reviewing the environment variables and configuration files used by the application.<br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">✅ Steps to Resolution</h4>
+                                <div class="rca-content-box">
+                                    1. The team recommended updating the IAM roles associated with the Kubernetes service account to ensure that it had the necessary permissions to access ECR and refresh tokens. This involved adding the <code class="inline-code">ecr:GetAuthorizationToken</code> permission to the IAM policy.<br>
+
+2. Debarshi Mullick confirmed that the IAM roles were updated and verified the changes by executing the following command to describe the IAM policy:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 BASH</div>
+<pre class="code-block"><code>aws iam get-policy --policy-arn arn:aws:iam::&lt;account-id&gt;:policy/&lt;policy-name&gt;</code></pre>
+</div>
+   This command was used to ensure that the correct permissions were applied.<br><br>
+
+3. After updating the IAM roles, the pods were restarted to apply the changes. The team used the following command to delete the existing pods, allowing Kubernetes to recreate them with the updated configuration:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 BASH</div>
+<pre class="code-block"><code>kubectl delete pod &lt;pod-name&gt; -n &lt;namespace&gt;</code></pre>
+</div>
+   This step was necessary to ensure that the pods picked up the new IAM roles and permissions.<br><br>
+
+4. The team monitored the pods to confirm that they transitioned to a running state without errors. This involved using the <code class="inline-code">kubectl get pods</code> command to continuously check the status of the pods until they were confirmed to be running successfully.<br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🎯 Root Cause Analysis</h4>
+                                <div class="rca-content-box">
+                                    The likely root cause of the issue was insufficient IAM permissions for the Kubernetes service account used by the <code class="inline-code">ecr-token-refresher-vymo-ecr</code> pods. The pods were unable to authenticate with AWS ECR due to missing permissions, specifically the <code class="inline-code">ecr:GetAuthorizationToken</code> permission. This prevented the pods from refreshing their ECR tokens, leading to the 'CrashLoopBackOff' state. The issue was identified through log analysis and confirmed by reviewing the IAM roles and permissions. Updating the IAM roles to include the necessary permissions resolved the authentication failures, allowing the pods to start successfully.<br>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr></table></div>
+        <div class="customer-section">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #f3f4f6 100%); 
+                        padding: 20px 25px; display: flex; justify-content: space-between; align-items: center;">
+                <h2>CommerceIQ</h2>
+                <span style="background: #14b8a6; color: white; padding: 6px 14px; 
+                           border-radius: 20px; font-size: 0.85rem; font-weight: 500;">
+                    2 tickets
+                </span>
+            </div>
+            <table>
+                <tr>
+                    <th width="50">#</th>
+                    <th>Title</th>
+                    <th width="120">ClickUp</th>
+                    <th width="100">Date</th>
+                    <th width="120">Status</th>
+                    <th width="150">Owner</th>
+                </tr>
+                <tr class="expandable" data-ticket-id="CommerceIQ_1">
+                    <td><span class="expand-indicator">▶</span> 1</td>
+                    <td>Need support for advanced filters in Selective release</td>
+                    <td><a href="https://app.clickup.com/t/86d0e8nrm" 
+                           style="color: #7c3aed; text-decoration: none; padding: 5px 12px; 
+                                  border: 1px solid #7c3aed; border-radius: 6px; display: inline-block; font-size: 0.85rem;"
+                           target="_blank" onclick="event.stopPropagation()">View</a></td>
+                    <td>2025-09-25</td>
+                    <td><span class="status status-default">pending (ack)</span></td>
+                    <td>Manan Bhandari</td>
+                </tr>
+                <tr id="details_CommerceIQ_1" style="display: none;">
+                    <td colspan="6" style="padding: 0;">
+                        <div style="background: #f9fafb; padding: 20px 60px; border-left: 4px solid #7c3aed;">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; 
+                                        padding: 15px; background: white; border-radius: 6px;">
+                                <div><strong>Customer:</strong><br>CommerceIQ</div>
+                                <div><strong>Date:</strong><br>2025-09-25</div>
+                                <div><strong>Status:</strong><br>pending (ack)</div>
+                                <div><strong>Owner:</strong><br>Manan Bhandari</div>
+                                <div><strong>ClickUp ID:</strong><br>86d0e8nrm</div>
+                                <div><strong>Analysis:</strong><br>✅ AI Generated</div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📋 Summary of the Issue</h4>
+                                <div class="rca-content-box">
+                                    The customer, CommerceIQ, requested support for implementing advanced filters in their Selective release feature. They expected this enhancement to be prioritized in the immediate roadmap. However, the current status indicates that this request is acknowledged but not scheduled for immediate development. The impact of this delay is that the customer will not have the desired filtering capabilities in their release process, potentially affecting their workflow efficiency. The environment and specific technical details of the service were not discussed in the conversation.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🔍 Steps to Debug</h4>
+                                <div class="rca-content-box">
+                                    1. Manan Bhandari acknowledged the enhancement request from CommerceIQ and communicated that it is on the team's list of tasks. However, it was noted that this feature is not part of the immediate roadmap. This indicates that the team has recognized the need but has not yet allocated resources or scheduled time for its development.<br><br>
+
+2. No specific debugging steps were performed as the conversation focused on the prioritization and scheduling of the enhancement request rather than technical troubleshooting or investigation.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">✅ Steps to Resolution</h4>
+                                <div class="rca-content-box">
+                                    1. Manan Bhandari informed the customer that the enhancement request for advanced filters in the Selective release is acknowledged and will be considered in future planning. The customer was assured that updates would be provided as the roadmap evolves.<br><br>
+
+2. No technical resolution steps were taken as the issue pertains to feature enhancement prioritization rather than a technical fault or error requiring immediate resolution.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🎯 Root Cause Analysis</h4>
+                                <div class="rca-content-box">
+                                    The issue appears to be related to the prioritization and scheduling of feature enhancements within the development team's roadmap. The request for advanced filters in the Selective release is acknowledged but not prioritized for immediate action. This decision is likely due to existing commitments and resource allocation constraints. Further investigation into the team's roadmap and resource availability would be needed to confirm the exact reasons for the delay in prioritizing this enhancement.<br><br>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="expandable" data-ticket-id="CommerceIQ_2">
+                    <td><span class="expand-indicator">▶</span> 2</td>
+                    <td>Resource not removed from resource group, if resource is removed</td>
+                    <td><a href="https://app.clickup.com/t/86d0e8acc" 
+                           style="color: #7c3aed; text-decoration: none; padding: 5px 12px; 
+                                  border: 1px solid #7c3aed; border-radius: 6px; display: inline-block; font-size: 0.85rem;"
+                           target="_blank" onclick="event.stopPropagation()">View</a></td>
+                    <td>2025-09-25</td>
+                    <td><span class="status status-default">pr raised</span></td>
+                    <td>Samarthya Gupta</td>
+                </tr>
+                <tr id="details_CommerceIQ_2" style="display: none;">
+                    <td colspan="6" style="padding: 0;">
+                        <div style="background: #f9fafb; padding: 20px 60px; border-left: 4px solid #7c3aed;">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; 
+                                        padding: 15px; background: white; border-radius: 6px;">
+                                <div><strong>Customer:</strong><br>CommerceIQ</div>
+                                <div><strong>Date:</strong><br>2025-09-25</div>
+                                <div><strong>Status:</strong><br>pr raised</div>
+                                <div><strong>Owner:</strong><br>Samarthya Gupta</div>
+                                <div><strong>ClickUp ID:</strong><br>86d0e8acc</div>
+                                <div><strong>Analysis:</strong><br>✅ AI Generated</div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📋 Summary of the Issue</h4>
+                                <div class="rca-content-box">
+                                    The customer, CommerceIQ, was attempting to remove a resource from a resource group within their Azure environment. The expected outcome was that the resource would be completely removed from the resource group. However, the resource was not removed as anticipated, leading to a discrepancy in the resource group's state. This issue was identified in the context of managing Azure resources, specifically within the Azure Kubernetes Service (AKS) environment. The impact of this issue was that the resource group retained resources that were intended to be deleted, potentially leading to unexpected billing or resource management complications.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🔍 Steps to Debug</h4>
+                                <div class="rca-content-box">
+                                    1. Samarthya Gupta initiated the debugging process by reviewing the Azure resource group configurations to verify the presence of the resource that was supposed to be removed. This step was crucial to confirm the initial state of the resource group.<br><br>
+
+2. The team suggested checking the Azure Activity Logs to identify any operations related to the deletion of the resource. This was to ensure that the deletion command was executed and to capture any errors or warnings that might have occurred during the process.<br><br>
+
+3. Samarthya Gupta executed the following command to list the resources within the resource group:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 BASH</div>
+<pre class="code-block"><code>az resource list --resource-group &lt;resource-group-name&gt;</code></pre>
+</div>
+   The output confirmed that the resource was still present, indicating that the deletion process did not complete successfully.<br><br>
+
+4. The team observed configuration warnings related to the resource dependencies, which might have prevented the deletion. These warnings were noted but not immediately resolved, as further investigation was needed to understand their impact.<br><br>
+
+5. It was suggested to review the permissions and roles associated with the Azure account to ensure that the necessary permissions for resource deletion were in place. This step was to rule out any permission-related issues that could have blocked the deletion process.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">✅ Steps to Resolution</h4>
+                                <div class="rca-content-box">
+                                    1. The team recommended re-issuing the deletion command with elevated permissions to ensure that the resource could be removed without permission-related issues. This involved using an account with higher privileges or adjusting the role assignments temporarily.<br><br>
+
+2. Samarthya Gupta was advised to use the Azure Portal to manually delete the resource, providing a graphical interface to confirm the deletion and observe any immediate feedback or errors.<br><br>
+
+3. The team suggested implementing a script to automate the verification of resource deletions in the future, ensuring that any discrepancies are flagged immediately. This script would periodically check the resource group state and compare it against expected configurations.<br><br>
+
+4. It was recommended to monitor the Azure Activity Logs post-deletion to confirm that the resource was successfully removed and to capture any anomalies that might occur during the process.<br><br>
+
+5. The customer was provided guidance to ensure that all dependencies and linked resources were appropriately managed before attempting deletion, to prevent similar issues in the future.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🎯 Root Cause Analysis</h4>
+                                <div class="rca-content-box">
+                                    The likely root cause of the issue appears to be related to resource dependencies within the Azure environment that were not properly managed before attempting the deletion. These dependencies might have included linked resources or configurations that prevented the resource from being removed. Additionally, there might have been permission-related constraints that blocked the deletion process. Further investigation into the Azure Activity Logs and configuration settings is needed to confirm these suspicions and to ensure that all necessary permissions and dependencies are addressed before future deletions.<br><br>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📎 ClickUp Attachments & Screenshots</h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 15px 0;">
+                                    <div style="border: 2px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        <img src="https://t3443930.p.clickup-attachments.com/t3443930/cd674183-c36c-45c3-bc5b-7128b7969e5e/Screenshot%202025-09-25%20at%2017.12.55.png" alt="Screenshot 2025-09-25 at 17.12.55.png" style="width: 100%; height: 200px; object-fit: cover; cursor: pointer;" onclick="openImageViewer('https://t3443930.p.clickup-attachments.com/t3443930/cd674183-c36c-45c3-bc5b-7128b7969e5e/Screenshot%202025-09-25%20at%2017.12.55.png', 'Screenshot 2025-09-25 at 17.12.55.png')">
+                                        <div style="padding: 12px; background: #f9fafb; border-top: 1px solid #e5e7eb;">
+                                            <div style="font-weight: 600; color: #374151; margin-bottom: 4px;">Screenshot 2025-09-25 at 17.12.55.png</div>
+                                            <a href="https://t3443930.p.clickup-attachments.com/t3443930/cd674183-c36c-45c3-bc5b-7128b7969e5e/Screenshot%202025-09-25%20at%2017.12.55.png" target="_blank" style="color: #7c3aed; text-decoration: none; font-size: 0.85rem;">View Full Size →</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr></table></div>
+        <div class="customer-section">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #f3f4f6 100%); 
+                        padding: 20px 25px; display: flex; justify-content: space-between; align-items: center;">
+                <h2>MoveInSync</h2>
+                <span style="background: #14b8a6; color: white; padding: 6px 14px; 
+                           border-radius: 20px; font-size: 0.85rem; font-weight: 500;">
+                    2 tickets
+                </span>
+            </div>
+            <table>
+                <tr>
+                    <th width="50">#</th>
+                    <th>Title</th>
+                    <th width="120">ClickUp</th>
+                    <th width="100">Date</th>
+                    <th width="120">Status</th>
+                    <th width="150">Owner</th>
+                </tr>
+                <tr class="expandable" data-ticket-id="MoveInSync_1">
+                    <td><span class="expand-indicator">▶</span> 1</td>
+                    <td>Header issue in private NLB</td>
+                    <td><a href="https://app.clickup.com/t/86d0fjff3" 
+                           style="color: #7c3aed; text-decoration: none; padding: 5px 12px; 
+                                  border: 1px solid #7c3aed; border-radius: 6px; display: inline-block; font-size: 0.85rem;"
+                           target="_blank" onclick="event.stopPropagation()">View</a></td>
+                    <td>2025-09-30</td>
+                    <td><span class="status status-default">needs customer response</span></td>
+                    <td>Omendra Tomar</td>
+                </tr>
+                <tr id="details_MoveInSync_1" style="display: none;">
+                    <td colspan="6" style="padding: 0;">
+                        <div style="background: #f9fafb; padding: 20px 60px; border-left: 4px solid #7c3aed;">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; 
+                                        padding: 15px; background: white; border-radius: 6px;">
+                                <div><strong>Customer:</strong><br>MoveInSync</div>
+                                <div><strong>Date:</strong><br>2025-09-30</div>
+                                <div><strong>Status:</strong><br>needs customer response</div>
+                                <div><strong>Owner:</strong><br>Omendra Tomar</div>
+                                <div><strong>ClickUp ID:</strong><br>86d0fjff3</div>
+                                <div><strong>Analysis:</strong><br>✅ AI Generated</div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📋 Summary of the Issue</h4>
+                                <div class="rca-content-box">
+                                    The customer, MoveInSync, was experiencing an issue where the <code class="inline-code">CSRF_NONCE</code> header was not being passed through their private Network Load Balancer (NLB) to the <code class="inline-code">routeeditor</code> service in the <code class="inline-code">mis-prod-sg</code> environment. This was unexpected as the header should have been transmitted without issue. The problem was identified as being related to the NGINX ingress controller configuration, where headers containing underscores were being dropped due to a default security setting. This impacted the functionality of the service by preventing necessary headers from reaching the backend application.<br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🔍 Steps to Debug</h4>
+                                <div class="rca-content-box">
+                                    1. Dhvani Vashist initially checked the private NLB configuration and confirmed that there were no rules that might cause the issue. This was noted in the ClickUp comments without any specific command outputs.<br><br>
+
+2. Rauneet Verma requested additional information about the ingress resource, service name, and environment to better understand the context of the issue. Dhvani Vashist provided the environment (<code class="inline-code">mis-prod-sg</code>), service name (<code class="inline-code">routeeditor</code>), and ingress (<code class="inline-code">moveinsync-nlb-pvt</code>).<br>
+
+3. Omendra Tomar investigated further and identified that the <code class="inline-code">CSRF_NONCE</code> header was not being passed due to the NGINX ingress controller's default behavior of dropping headers with underscores. This was confirmed by checking the cluster configuration, where it was found that <code class="inline-code">enable-underscores-in-headers</code> was set to false in the JSON configuration at the spec level.<br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">✅ Steps to Resolution</h4>
+                                <div class="rca-content-box">
+                                    1. Omendra Tomar identified the need to modify the NGINX ingress controller configuration to allow headers with underscores. The specific change required was to set <code class="inline-code">enable-underscores-in-headers</code> to true within the advanced configuration block of the JSON file.<br>
+
+2. The configuration change was specified as follows:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 JSON</div>
+<pre class="code-block"><code>{
+       &quot;advanced&quot;: {<br>
+           &quot;nginx_ingress_controller&quot;: {<br>
+               &quot;enable-underscores-in-headers&quot;: true<br>
+           }<br>
+       }<br>
+   }</code></pre><br>
+</div>
+   This change was necessary to ensure that the <code class="inline-code">CSRF_NONCE</code> header would be passed through the NLB to the <code class="inline-code">routeeditor</code> service.<br>
+
+3. The team advised the customer to implement this configuration change to resolve the issue. As of the last update, the resolution was pending confirmation from the customer.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🎯 Root Cause Analysis</h4>
+                                <div class="rca-content-box">
+                                    The likely root cause of the issue was the NGINX ingress controller's default configuration, which drops HTTP headers containing underscores. This behavior was due to the <code class="inline-code">enable-underscores-in-headers</code> setting being incorrectly set to false in the JSON configuration at the spec level. This configuration prevented the <code class="inline-code">CSRF_NONCE</code> header from being passed through the private NLB to the <code class="inline-code">routeeditor</code> service. The issue was identified through a review of the ingress controller settings and confirmed by Omendra Tomar. Further investigation or confirmation from the customer is needed to ensure the resolution is effective.<br>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📎 ClickUp Attachments & Screenshots</h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin: 15px 0;">
+                                    <div style="border: 2px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        <img src="https://t3443930.p.clickup-attachments.com/t3443930/c50fc83c-37e9-4f3e-8dfd-b78cd4adf6d6/image.png" alt="image.png" style="width: 100%; height: 200px; object-fit: cover; cursor: pointer;" onclick="openImageViewer('https://t3443930.p.clickup-attachments.com/t3443930/c50fc83c-37e9-4f3e-8dfd-b78cd4adf6d6/image.png', 'image.png')">
+                                        <div style="padding: 12px; background: #f9fafb; border-top: 1px solid #e5e7eb;">
+                                            <div style="font-weight: 600; color: #374151; margin-bottom: 4px;">image.png</div>
+                                            <a href="https://t3443930.p.clickup-attachments.com/t3443930/c50fc83c-37e9-4f3e-8dfd-b78cd4adf6d6/image.png" target="_blank" style="color: #7c3aed; text-decoration: none; font-size: 0.85rem;">View Full Size →</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="expandable" data-ticket-id="MoveInSync_2">
+                    <td><span class="expand-indicator">▶</span> 2</td>
+                    <td>Getting error in ebs csi driver pod on node in dev env</td>
+                    <td><a href="https://app.clickup.com/t/86d0f2xxe" 
+                           style="color: #7c3aed; text-decoration: none; padding: 5px 12px; 
+                                  border: 1px solid #7c3aed; border-radius: 6px; display: inline-block; font-size: 0.85rem;"
+                           target="_blank" onclick="event.stopPropagation()">View</a></td>
+                    <td>2025-09-29</td>
+                    <td><span class="status status-default">customer side fix</span></td>
+                    <td>Rauneet Verma</td>
+                </tr>
+                <tr id="details_MoveInSync_2" style="display: none;">
+                    <td colspan="6" style="padding: 0;">
+                        <div style="background: #f9fafb; padding: 20px 60px; border-left: 4px solid #7c3aed;">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; 
+                                        padding: 15px; background: white; border-radius: 6px;">
+                                <div><strong>Customer:</strong><br>MoveInSync</div>
+                                <div><strong>Date:</strong><br>2025-09-29</div>
+                                <div><strong>Status:</strong><br>customer side fix</div>
+                                <div><strong>Owner:</strong><br>Rauneet Verma</div>
+                                <div><strong>ClickUp ID:</strong><br>86d0f2xxe</div>
+                                <div><strong>Analysis:</strong><br>✅ AI Generated</div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📋 Summary of the Issue</h4>
+                                <div class="rca-content-box">
+                                    The customer, MoveInSync, encountered an issue with the EBS CSI driver pod on a node in their development environment. They expected the EBS volumes to attach successfully to the pods, but instead, they faced scheduling and volume attachment failures. The error messages indicated issues with node taints and volume node affinity conflicts, which prevented the pods from being scheduled and the volumes from being attached. This affected the deployment of applications relying on these volumes, causing delays in their development processes.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🔍 Steps to Debug</h4>
+                                <div class="rca-content-box">
+                                    1. Umer Beigh observed scheduling failures due to node taints and volume node affinity conflicts. The logs showed:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 CODE</div>
+<pre class="code-block"><code>Warning  FailedScheduling    15m (x17 over 95m)  default-scheduler        0/5 nodes are available: 1 node(s) had untolerated taint {facets.cloud/dedicated: true}, 4 node(s) were unschedulable. preemption: 0/5 nodes are available: 5 Preemption is not helpful for scheduling.</code></pre>
+</div>
+   This indicated that the nodes had taints that the pods could not tolerate.<br><br>
+
+2. Rauneet Verma identified that Cast AI had added a taint on the nodes, which was causing the pods to remain in a pending state:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 CODE</div>
+<pre class="code-block"><code>Cast AI has added the taint on the nodes</code></pre>
+</div>
+   This was confirmed by checking the node configurations.<br><br>
+
+3. Umer Beigh removed the taints from the nodes to allow the pods to be scheduled:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 CODE</div>
+<pre class="code-block"><code>Type     Reason              Age                 From                     Message
+   Warning  FailedAttachVolume  2s (x5 over 8m10s)  attachdetach-controller  AttachVolume.Attach failed for volume &quot;pvc-8eff36fe-ce79-49f0-b67e-b1fee15d2e3d&quot; : timed out waiting for external-attacher of</code></pre><br>
+</div>
+   This action was intended to resolve the scheduling issue by making the nodes available for the pods.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">✅ Steps to Resolution</h4>
+                                <div class="rca-content-box">
+                                    1. Umer Beigh removed the taints from the nodes, which allowed the pods to be scheduled successfully. This was confirmed by the following log entry:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 CODE</div>
+<pre class="code-block"><code>Normal   Scheduled           10m                 default-scheduler        Successfully assigned default/consul-consul-server-0 to ip-10-181-64-86.ap-south-1.compute.internal</code></pre>
+</div>
+   This step resolved the immediate scheduling issue.<br><br>
+
+2. Rauneet Verma confirmed that the EBS CSI controller pods were running successfully after the taints were removed:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 CODE</div>
+<pre class="code-block"><code>kube-system        ebs-csi-controller-8664f544d6-dw8lg                               7/7     Running             2 (15m ago)     3h5m</code></pre>
+</div>
+   This indicated that the pods were now operational and the volumes could be attached as expected.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🎯 Root Cause Analysis</h4>
+                                <div class="rca-content-box">
+                                    The likely root cause of the issue was the addition of a taint by Cast AI on the nodes, which the EBS CSI driver pods could not tolerate. This taint prevented the pods from being scheduled, leading to volume attachment failures. The taint was identified and removed by Umer Beigh, which allowed the pods to be scheduled and the volumes to attach successfully. Further investigation into why Cast AI added these taints could prevent similar issues in the future.<br><br>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr></table></div>
+        <div class="customer-section">
+            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #f3f4f6 100%); 
+                        padding: 20px 25px; display: flex; justify-content: space-between; align-items: center;">
+                <h2>Capillary</h2>
+                <span style="background: #14b8a6; color: white; padding: 6px 14px; 
+                           border-radius: 20px; font-size: 0.85rem; font-weight: 500;">
+                    3 tickets
+                </span>
+            </div>
+            <table>
+                <tr>
+                    <th width="50">#</th>
+                    <th>Title</th>
+                    <th width="120">ClickUp</th>
+                    <th width="100">Date</th>
+                    <th width="120">Status</th>
+                    <th width="150">Owner</th>
+                </tr>
+                <tr class="expandable" data-ticket-id="Capillary_1">
+                    <td><span class="expand-indicator">▶</span> 1</td>
+                    <td>crm-nightly-new env release failing (Unidentified error occurred)</td>
+                    <td><a href="https://app.clickup.com/t/86d0fnqnb" 
+                           style="color: #7c3aed; text-decoration: none; padding: 5px 12px; 
+                                  border: 1px solid #7c3aed; border-radius: 6px; display: inline-block; font-size: 0.85rem;"
+                           target="_blank" onclick="event.stopPropagation()">View</a></td>
+                    <td>2025-09-30</td>
+                    <td><span class="status status-default">pending (ack)</span></td>
+                    <td>Omendra Tomar</td>
+                </tr>
+                <tr id="details_Capillary_1" style="display: none;">
+                    <td colspan="6" style="padding: 0;">
+                        <div style="background: #f9fafb; padding: 20px 60px; border-left: 4px solid #7c3aed;">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; 
+                                        padding: 15px; background: white; border-radius: 6px;">
+                                <div><strong>Customer:</strong><br>Capillary</div>
+                                <div><strong>Date:</strong><br>2025-09-30</div>
+                                <div><strong>Status:</strong><br>pending (ack)</div>
+                                <div><strong>Owner:</strong><br>Omendra Tomar</div>
+                                <div><strong>ClickUp ID:</strong><br>86d0fnqnb</div>
+                                <div><strong>Analysis:</strong><br>✅ AI Generated</div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📋 Summary of the Issue</h4>
+                                <div class="rca-content-box">
+                                    The customer, Capillary, was attempting to execute a release in the <code class="inline-code">crm-nightly-new</code> environment, expecting it to complete within the usual 10-12 minutes. However, the release was failing with an unidentified error, and subsequent attempts were hindered by a state lock issue. Additionally, the release times had increased significantly to 25-30 minutes. This issue was observed across all non-production clusters, impacting the efficiency of their deployment process. The environment in question was using IAC version <code class="inline-code">stage/3.30.20</code>, which was suspected to be the cause of the delays and failures.<br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🔍 Steps to Debug</h4>
+                                <div class="rca-content-box">
+                                    1. Nihar Jain reported that the release was failing with an unidentified error and subsequent attempts were blocked by a state lock. This indicated a potential issue with the release process or configuration.<br><br>
+
+2. Omendra Tomar began investigating the issue and identified that the problem was related to a newly introduced feature in the recent releases. This feature was likely causing the release failures and increased completion times.<br><br>
+
+3. Nihar Jain observed that releases from IAC version <code class="inline-code">stage/3.30.20</code> were taking significantly longer than expected, suggesting a performance degradation linked to this version.<br>
+
+4. Omendra Tomar decided to revert the changes introduced by the new feature to restore stability. This action was intended to determine if the feature was indeed the cause of the issue.<br><br>
+
+5. After the rollback, Nihar Jain noted that while the releases were no longer failing, the time to complete the release remained high, indicating that the rollback partially addressed the issue but did not resolve the performance degradation.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">✅ Steps to Resolution</h4>
+                                <div class="rca-content-box">
+                                    1. Omendra Tomar reverted the newly introduced feature in the recent releases to restore stability. This rollback was aimed at eliminating the suspected cause of the release failures.<br><br>
+
+2. Nihar Jain reverted the IAC version to <code class="inline-code">stage/3.30.19</code>, which was known to have stable performance characteristics. This action was taken to ensure that the release process returned to its expected completion time.<br>
+
+3. Nihar Jain pinned all non-production clusters to IAC version <code class="inline-code">stage/3.30.19</code> to maintain consistent performance and avoid the issues observed with <code class="inline-code">stage/3.30.20</code>.<br>
+
+4. The team advised against pushing the problematic changes to the production tag until the issue was fully resolved and confirmed that the stage tag was stable.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🎯 Root Cause Analysis</h4>
+                                <div class="rca-content-box">
+                                    The likely root cause of the issue was the introduction of a new feature in IAC version <code class="inline-code">stage/3.30.20</code>, which caused unexpected release failures and significantly increased release times. This feature appears to have introduced performance bottlenecks or conflicts within the release process. The rollback to a previous stable version (<code class="inline-code">stage/3.30.19</code>) confirmed that the new feature was the primary suspect, as reverting to this version restored the expected release times. Further investigation is needed to identify the specific changes within the feature that caused the degradation.<br>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="expandable" data-ticket-id="Capillary_2">
+                    <td><span class="expand-indicator">▶</span> 2</td>
+                    <td>ecr-token-refresher-deployer job is failing leading to issues in multiple pod image pull in SGCRM</td>
+                    <td><a href="https://app.clickup.com/t/86d0f8aq1" 
+                           style="color: #7c3aed; text-decoration: none; padding: 5px 12px; 
+                                  border: 1px solid #7c3aed; border-radius: 6px; display: inline-block; font-size: 0.85rem;"
+                           target="_blank" onclick="event.stopPropagation()">View</a></td>
+                    <td>2025-09-29</td>
+                    <td><span class="status status-default">customer side fix</span></td>
+                    <td>Rauneet Verma</td>
+                </tr>
+                <tr id="details_Capillary_2" style="display: none;">
+                    <td colspan="6" style="padding: 0;">
+                        <div style="background: #f9fafb; padding: 20px 60px; border-left: 4px solid #7c3aed;">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; 
+                                        padding: 15px; background: white; border-radius: 6px;">
+                                <div><strong>Customer:</strong><br>Capillary</div>
+                                <div><strong>Date:</strong><br>2025-09-29</div>
+                                <div><strong>Status:</strong><br>customer side fix</div>
+                                <div><strong>Owner:</strong><br>Rauneet Verma</div>
+                                <div><strong>ClickUp ID:</strong><br>86d0f8aq1</div>
+                                <div><strong>Analysis:</strong><br>✅ AI Generated</div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📋 Summary of the Issue</h4>
+                                <div class="rca-content-box">
+                                    The customer was experiencing issues with the <code class="inline-code">ecr-token-refresher-deployer</code> job failing, which led to problems with pulling images for multiple pods in the SGCRM environment. The expected behavior was for the pods to pull images successfully and operate without interruption. However, the <code class="inline-code">coredns</code> pods were in a pending state, preventing the <code class="inline-code">ecr-token-refresher-deployer</code> pods from creating necessary secrets, thus causing the image pull failures. This issue was critical as it affected the deployment and operation of services within the SGCRM environment.<br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🔍 Steps to Debug</h4>
+                                <div class="rca-content-box">
+                                    1. Rauneet Verma observed that the <code class="inline-code">coredns</code> pods were in a pending state, which was preventing the <code class="inline-code">ecr-token-refresher-deployer</code> pods from functioning correctly. This was identified as a potential cause of the image pull issues.<br>
+
+2. To address this, Rauneet deleted the <code class="inline-code">coredns</code> pods. This action was intended to force the pods to reschedule and potentially resolve the pending state issue.<br>
+
+3. After the deletion, the <code class="inline-code">coredns</code> pods were successfully rescheduled, and the <code class="inline-code">ecr-token-refresher-deployer</code> pods were able to create the necessary secrets. This was confirmed by observing that the pods were up and running, indicating that the immediate issue was resolved.<br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">✅ Steps to Resolution</h4>
+                                <div class="rca-content-box">
+                                    1. Rauneet Verma deleted the <code class="inline-code">coredns</code> pods to resolve the pending state issue. This action was taken to allow the pods to reschedule and clear any scheduling conflicts that might have been causing the issue.<br>
+
+2. After the deletion, the <code class="inline-code">coredns</code> pods were successfully rescheduled, which allowed the <code class="inline-code">ecr-token-refresher-deployer</code> pods to create the necessary secrets. This step was crucial in resolving the image pull issues as it restored the normal operation of the pods.<br>
+
+3. The successful rescheduling and secret creation were verified by checking the status of the pods, which were confirmed to be up and running, indicating that the issue was resolved.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🎯 Root Cause Analysis</h4>
+                                <div class="rca-content-box">
+                                    The likely root cause of the issue was the <code class="inline-code">coredns</code> pods being in a pending state, which prevented the <code class="inline-code">ecr-token-refresher-deployer</code> pods from creating the necessary secrets for image pulls. This pending state was likely due to scheduling conflicts or resource constraints within the cluster. By deleting and rescheduling the <code class="inline-code">coredns</code> pods, the issue was resolved, allowing the <code class="inline-code">ecr-token-refresher-deployer</code> pods to function correctly and create the required secrets. Further investigation into the cluster's resource allocation and scheduling policies might be needed to prevent recurrence.<br>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="expandable" data-ticket-id="Capillary_3">
+                    <td><span class="expand-indicator">▶</span> 3</td>
+                    <td>When we configure new Alerts, the alerts are not created in prometheus</td>
+                    <td><a href="https://app.clickup.com/t/86d0dx4qy" 
+                           style="color: #7c3aed; text-decoration: none; padding: 5px 12px; 
+                                  border: 1px solid #7c3aed; border-radius: 6px; display: inline-block; font-size: 0.85rem;"
+                           target="_blank" onclick="event.stopPropagation()">View</a></td>
+                    <td>2025-09-24</td>
+                    <td><span class="status status-default">needs customer response</span></td>
+                    <td>Rauneet Verma</td>
+                </tr>
+                <tr id="details_Capillary_3" style="display: none;">
+                    <td colspan="6" style="padding: 0;">
+                        <div style="background: #f9fafb; padding: 20px 60px; border-left: 4px solid #7c3aed;">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; 
+                                        padding: 15px; background: white; border-radius: 6px;">
+                                <div><strong>Customer:</strong><br>Capillary</div>
+                                <div><strong>Date:</strong><br>2025-09-24</div>
+                                <div><strong>Status:</strong><br>needs customer response</div>
+                                <div><strong>Owner:</strong><br>Rauneet Verma</div>
+                                <div><strong>ClickUp ID:</strong><br>86d0dx4qy</div>
+                                <div><strong>Analysis:</strong><br>✅ AI Generated</div>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">📋 Summary of the Issue</h4>
+                                <div class="rca-content-box">
+                                    The customer was attempting to configure new alerts in Prometheus, expecting them to appear in the Prometheus UI. However, the alerts were not being created as expected. The issue was identified in the Prometheus environment where the Prometheus Operator was rejecting all rules due to a syntax error in one of the rules. Specifically, the rule <code class="inline-code">EventNotificationKafkaEventsInQueue</code> contained an invalid PromQL expression with an unexpected character, which prevented the synchronization of the entire PrometheusRule configuration. This issue impacted the visibility and management of alerts within the Prometheus system.<br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🔍 Steps to Debug</h4>
+                                <div class="rca-content-box">
+                                    1. Rauneet Verma requested the output of <code class="inline-code">kubectl get prometheusrules</code> to verify the current rules, but encountered a permission error:<br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 CODE</div>
+<pre class="code-block"><code>Error from server (Forbidden): prometheusrules.monitoring.coreos.com is forbidden: User &quot;system:serviceaccount:default:rauneet.verma-facets.cloud&quot; cannot list resource &quot;prometheusrules&quot; in API group &quot;monitoring.coreos.com&quot; in the namespace &quot;default&quot;</code></pre>
+</div>
+   This indicated a lack of necessary permissions to access the Prometheus rules.<br><br>
+
+2. Kishan Kumar confirmed the presence of the alert <code class="inline-code">mongo-auditlog-alert-alert-group</code> indicating that some alerts were visible, but the new ones were not appearing.<br>
+
+3. Rauneet Verma executed a command to check the logs of the Prometheus Operator pod for errors related to rules:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 BASH</div>
+<pre class="code-block"><code>kubectl logs prometheus-operator-operator-57f844c6c5-sm2h8 -n default --tail=100 | grep -E &#x27;rule|error|warn|fail&#x27; -i</code></pre>
+</div>
+   The logs revealed:<br><br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 CODE</div>
+<pre class="code-block"><code>level=info ts=2025-09-25T06:06:50.780170556Z caller=rules.go:41 component=prometheusoperator msg=&quot;Invalid rule&quot; err=&quot;8:11: group \&quot;pod.rules\&quot;, rule 1, \&quot;EventNotificationKafkaEventsInQueue\&quot;: could not parse expression: 1:97: parse error: unexpected character inside braces: &#x27;)&#x27;&quot;
+   level=error ts=2025-09-25T06:06:51.099281788Z caller=klog.go:116 component=k8s_client_runtime func=ErrorDepth msg=&quot;sync \&quot;default/prometheus-operator-prometheus\&quot; failed: Invalid rule&quot;</code></pre><br>
+</div>
+   This confirmed a syntax error in the rule <code class="inline-code">EventNotificationKafkaEventsInQueue</code> causing the operator to reject all rules.<br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">✅ Steps to Resolution</h4>
+                                <div class="rca-content-box">
+                                    1. Rauneet Verma identified the syntax error in the PromQL expression of the rule <code class="inline-code">EventNotificationKafkaEventsInQueue</code> and communicated this to Kishan Kumar, suggesting a review and correction of the rule syntax:<br>
+   <div class="code-block-wrapper">
+<div class="code-header">📝 CODE</div>
+<pre class="code-block"><code>i can see the above error in the prometheus-operator pod for the rule EventNotificationKafkaEventsInQueue, The rule EventNotificationKafkaEventsInQueue in the pod.rules group has an invalid PromQL expression with an unexpected ) character inside braces at position 97.
+   The Prometheus Operator is rejecting ALL rules because of the syntax error in the entire PrometheusRule configuration, which prevents any new rules from appearing in the Prometheus UI.<br>
+   error : parse error: unexpected character inside braces: &#x27;)&#x27;<br>
+   Can you check this rule and fix the syntax error which causing the issue.</code></pre><br>
+</div>
+
+2. Kishan Kumar acknowledged the issue and committed to checking and fixing the syntax error in the rule. The resolution of this syntax error is pending confirmation from the customer side.<br><br>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="color: #1f2937;">🎯 Root Cause Analysis</h4>
+                                <div class="rca-content-box">
+                                    The likely root cause of the issue was a syntax error in the PromQL expression of the rule <code class="inline-code">EventNotificationKafkaEventsInQueue</code>. This error, specifically an unexpected character inside braces, caused the Prometheus Operator to reject the entire set of rules, preventing any new alerts from being created in the Prometheus UI. The error was identified through log analysis of the Prometheus Operator pod, which highlighted the invalid rule syntax. Further investigation and correction of the rule syntax are required to resolve the issue and restore normal alert functionality.<br>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr></table></div>
+    </div>
+    
+    <script>
+        // Ensure all details are expanded when printing
+        window.addEventListener('beforeprint', function() {
+            // Expand all detail rows before printing
+            const detailRows = document.querySelectorAll('[id^="details_"]');
+            detailRows.forEach(row => {
+                row.style.display = 'table-row';
+            });
+            
+            // Hide expand indicators
+            const indicators = document.querySelectorAll('.expand-indicator');
+            indicators.forEach(indicator => {
+                indicator.style.display = 'none';
+            });
+        });
+        
+        // Optional: Restore collapsed state after printing (commented out to keep expanded)
+        // window.addEventListener('afterprint', function() {
+        //     const detailRows = document.querySelectorAll('[id^="details_"]');
+        //     detailRows.forEach(row => {
+        //         row.style.display = 'none';
+        //     });
+        // });
+        
+        function toggleDetails(ticketId) {
+            const detailsRow = document.getElementById('details_' + ticketId);
+            const clickedRow = detailsRow.previousElementSibling;
+            const indicator = clickedRow.querySelector('.expand-indicator');
+            
+            if (detailsRow.style.display === 'table-row') {
+                detailsRow.style.display = 'none';
+                indicator.innerHTML = '▶';
+                clickedRow.classList.remove('expanded');
+            } else {
+                // Close all other expanded rows
+                document.querySelectorAll('[id^="details_"]').forEach(row => {
+                    row.style.display = 'none';
+                    if (row.previousElementSibling) {
+                        row.previousElementSibling.classList.remove('expanded');
+                        row.previousElementSibling.querySelector('.expand-indicator').innerHTML = '▶';
+                    }
+                });
+                
+                detailsRow.style.display = 'table-row';
+                indicator.innerHTML = '▼';
+                clickedRow.classList.add('expanded');
+            }
+        }
+        
+        let lastEnterTime = 0;
+
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const sections = document.querySelectorAll('.customer-section');
+            let totalVisible = 0;
+
+            sections.forEach(section => {
+                const customerName = section.querySelector('h2').textContent.toLowerCase();
+                const rows = section.querySelectorAll('tr.expandable');
+                let hasVisibleRows = false;
+
+                rows.forEach(row => {
+                    const cells = row.cells;
+                    const title = cells[1] ? cells[1].textContent.toLowerCase() : '';
+                    const clickupId = cells[2] ? cells[2].textContent.toLowerCase() : '';
+                    const date = cells[3] ? cells[3].textContent.toLowerCase() : '';
+                    const status = cells[4] ? cells[4].textContent.toLowerCase() : '';
+                    const owner = cells[5] ? cells[5].textContent.toLowerCase() : '';
+
+                    const shouldShow = searchTerm === '' ||
+                                     title.includes(searchTerm) ||
+                                     customerName.includes(searchTerm) ||
+                                     clickupId.includes(searchTerm) ||
+                                     date.includes(searchTerm) ||
+                                     status.includes(searchTerm) ||
+                                     owner.includes(searchTerm);
+
+                    row.style.display = shouldShow ? '' : 'none';
+                    if (shouldShow) {
+                        hasVisibleRows = true;
+                        totalVisible++;
+                    }
+
+                    // Hide details row if main row is hidden
+                    const detailsRow = row.nextElementSibling;
+                    if (detailsRow && detailsRow.id && detailsRow.id.startsWith('details_')) {
+                        detailsRow.style.display = shouldShow ? '' : 'none';
+                    }
+                });
+
+                section.style.display = hasVisibleRows ? '' : 'none';
+            });
+
+            updateSearchStatus(searchTerm ? `Found ${totalVisible} result(s)` : '');
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            performSearch();
+            updateSearchStatus('Search cleared');
+        }
+
+        function updateSearchStatus(message) {
+            let statusDiv = document.getElementById('searchStatus');
+            if (!statusDiv) {
+                statusDiv = document.createElement('div');
+                statusDiv.id = 'searchStatus';
+                statusDiv.style.cssText = 'text-align: center; padding: 10px; color: #7c3aed; font-size: 14px;';
+                document.querySelector('.search-section').appendChild(statusDiv);
+            }
+            statusDiv.textContent = message;
+            if (message) {
+                setTimeout(() => { statusDiv.textContent = ''; }, 2000);
+            }
+        }
+        
+        // Enhanced keyboard support
+        document.getElementById('searchInput').addEventListener('keyup', function(event) {
+            const currentTime = Date.now();
+
+            if (event.key === 'Enter') {
+                if (this.value === '' && currentTime - lastEnterTime < 500) {
+                    // Double-Enter on empty field clears any filters
+                    clearSearch();
+                    lastEnterTime = 0;
+                } else {
+                    performSearch();
+                    lastEnterTime = currentTime;
+                }
+            } else if (event.key === 'Escape') {
+                clearSearch();
+            }
+        });
+
+        // Real-time search as you type
+        document.getElementById('searchInput').addEventListener('input', function() {
+            performSearch();
+        });
+
+        // Clear on double-click
+        document.getElementById('searchInput').addEventListener('dblclick', function() {
+            clearSearch();
+        });
+
+        // Cloud URLs will be injected here after upload
+        window.reportCloudUrls = {};
+
+        // Share functionality
+        function shareReport() {
+            console.log('Share button clicked!'); // Debug log
+
+            const modal = document.getElementById('shareModal');
+            const urlInput = document.getElementById('shareUrl');
+
+            if (!modal) {
+                console.error('Share modal not found!');
+                alert('Error: Share modal not found. Please refresh the page.');
+                return;
+            }
+
+            if (!urlInput) {
+                console.error('Share URL input not found!');
+                alert('Error: Share URL input not found. Please refresh the page.');
+                return;
+            }
+
+            // Get the current page URL (or use the cloud URL if available)
+            let shareUrl = window.location.href;
+
+            // Check if we have cloud URLs stored in the page
+            const cloudUrls = window.reportCloudUrls || {};
+            console.log('Available cloud URLs:', cloudUrls); // Debug log
+
+            // Prefer GitHub Pages, then Gist, then regular preview, then transfer.sh, then local
+            if (cloudUrls.github_repo && cloudUrls.github_repo.github_pages_url) {
+                shareUrl = cloudUrls.github_repo.github_pages_url;
+                console.log('Using GitHub Pages URL (best option)');
+            } else if (cloudUrls.github_gist && cloudUrls.github_gist.preview_url) {
+                shareUrl = cloudUrls.github_gist.preview_url;
+                console.log('Using GitHub gist preview URL');
+            } else if (cloudUrls.github_repo && cloudUrls.github_repo.preview_url) {
+                shareUrl = cloudUrls.github_repo.preview_url;
+                console.log('Using GitHub repo preview URL (limited JavaScript)');
+            } else if (cloudUrls.transfer_sh) {
+                shareUrl = cloudUrls.transfer_sh;
+                console.log('Using transfer.sh URL');
+            } else {
+                console.log('Using local file URL');
+            }
+
+            urlInput.value = shareUrl;
+
+            // Also populate the backup URL (HTML Preview)
+            const backupUrlInput = document.getElementById('shareUrlBackup');
+            if (backupUrlInput) {
+                let backupUrl = '';
+                if (cloudUrls.github_repo && cloudUrls.github_repo.preview_url) {
+                    backupUrl = cloudUrls.github_repo.preview_url;
+                } else if (cloudUrls.github_gist && cloudUrls.github_gist.preview_url) {
+                    backupUrl = cloudUrls.github_gist.preview_url;
+                } else {
+                    // Fallback: construct htmlpreview URL from current location
+                    const currentUrl = window.location.href;
+                    if (currentUrl.includes('github.io')) {
+                        // Convert GitHub Pages URL to htmlpreview URL
+                        const rawUrl = currentUrl.replace('abhishub-12.github.io/RCA-REPORTS/', 'raw.githubusercontent.com/AbhisHub-12/RCA-REPORTS/main/');
+                        backupUrl = 'https://htmlpreview.github.io/?' + rawUrl;
+                    } else {
+                        backupUrl = 'HTML Preview not available for local files';
+                    }
+                }
+                backupUrlInput.value = backupUrl;
+
+                // Hide backup section if not available
+                const backupSection = document.getElementById('backupSection');
+                if (backupSection) {
+                    if (backupUrl === 'HTML Preview not available for local files') {
+                        backupSection.style.display = 'none';
+                    } else {
+                        backupSection.style.display = 'block';
+                    }
+                }
+            }
+
+            modal.style.display = 'block';
+            console.log('Modal should now be visible'); // Debug log
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').style.display = 'none';
+            document.getElementById('copySuccess').style.display = 'none';
+        }
+
+        function copyShareLink() {
+            const urlInput = document.getElementById('shareUrl');
+            const copySuccess = document.getElementById('copySuccess');
+
+            // Select and copy the text
+            urlInput.select();
+            urlInput.setSelectionRange(0, 99999); // For mobile devices
+
+            try {
+                document.execCommand('copy');
+                copySuccess.style.display = 'block';
+
+                // Hide success message after 3 seconds
+                setTimeout(() => {
+                    copySuccess.style.display = 'none';
+                }, 3000);
+            } catch (err) {
+                // Fallback for modern browsers
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(urlInput.value).then(() => {
+                        copySuccess.style.display = 'block';
+                        setTimeout(() => {
+                            copySuccess.style.display = 'none';
+                        }, 3000);
+                    });
+                }
+            }
+        }
+
+        function shareViaEmail() {
+            const url = document.getElementById('shareUrl').value;
+            const subject = encodeURIComponent('RCA Report - ' + document.title);
+            const body = encodeURIComponent('Here is the RCA report:\n\n' + url);
+            window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
+        }
+
+        function shareViaSlack() {
+            const url = document.getElementById('shareUrl').value;
+            const text = encodeURIComponent('RCA Report: ' + url);
+            // Open Slack's share URL (user needs to be logged in)
+            window.open('https://slack.com/intl/en-in/share?url=' + encodeURIComponent(url), '_blank');
+        }
+
+        function shareViaTeams() {
+            const url = document.getElementById('shareUrl').value;
+            const text = encodeURIComponent('Check out this RCA Report');
+            // Open Teams share dialog
+            window.open('https://teams.microsoft.com/share?href=' + encodeURIComponent(url) + '&text=' + text, '_blank');
+        }
+
+        function shareViaWhatsApp() {
+            const url = document.getElementById('shareUrl').value;
+            const text = encodeURIComponent('RCA Report: ' + url);
+            // Open WhatsApp with pre-filled message
+            window.open('https://wa.me/?text=' + text, '_blank');
+        }
+
+        function copyBackupLink() {
+            const backupUrlInput = document.getElementById('shareUrlBackup');
+            // Select and copy the text
+            backupUrlInput.select();
+            backupUrlInput.setSelectionRange(0, 99999); // For mobile devices
+            try {
+                document.execCommand('copy');
+                // Show temporary success indicator
+                const button = document.getElementById('copyBackupLinkBtn');
+                const originalText = button.innerHTML;
+                button.innerHTML = '✅ Copied!';
+                button.style.background = '#10b981';
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = '#059669';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy backup link: ', err);
+                alert('Failed to copy to clipboard. Please copy manually.');
+            }
+        }
+
+        // Image Viewer Functions
+        function openImageViewer(imageUrl, imageTitle) {
+            const modal = document.getElementById('imageViewerModal');
+            const image = document.getElementById('imageViewerImage');
+            const title = document.getElementById('imageViewerTitle');
+
+            image.src = imageUrl;
+            image.alt = imageTitle;
+            title.textContent = imageTitle;
+            modal.style.display = 'block';
+
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageViewer() {
+            const modal = document.getElementById('imageViewerModal');
+            modal.style.display = 'none';
+
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close image viewer with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageViewer();
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('shareModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeShareModal();
+            }
+        });
+
+        // Add keyboard shortcut for share (Ctrl+Shift+S)
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+                e.preventDefault();
+                shareReport();
+            }
+        });
+
+        // Enhanced debugging for GitHub Pages
+        console.log('🔧 SCRIPT LOADING: JavaScript file started');
+        console.log('🌐 ENVIRONMENT:', window.location.href);
+        console.log('📍 USER AGENT:', navigator.userAgent);
+
+        // Check for Content Security Policy issues
+        if (typeof window.CSP !== 'undefined') {
+            console.log('⚠️ CSP DETECTED:', window.CSP);
+        }
+
+        // Validate all functions are loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ DOM Content Loaded');
+            console.log('✅ ShareReport function:', typeof shareReport);
+            console.log('✅ ToggleDetails function:', typeof toggleDetails);
+            console.log('✅ Share modal element:', document.getElementById('shareModal') ? 'Found' : 'Not Found');
+            console.log('✅ Cloud URLs:', window.reportCloudUrls);
+
+            // Test basic DOM manipulation
+            try {
+                const testElement = document.querySelector('.expandable');
+                if (testElement) {
+                    console.log('✅ EXPANDABLE ELEMENTS FOUND:', document.querySelectorAll('.expandable').length);
+                } else {
+                    console.log('❌ NO EXPANDABLE ELEMENTS FOUND');
+                }
+            } catch (error) {
+                console.error('❌ DOM QUERY ERROR:', error);
+            }
+
+            // Test event listener attachment
+            try {
+                const shareBtn = document.getElementById('shareReportBtn');
+                if (shareBtn) {
+                    console.log('✅ SHARE BUTTON FOUND, ATTACHING LISTENERS');
+                } else {
+                    console.log('❌ SHARE BUTTON NOT FOUND');
+                }
+            } catch (error) {
+                console.error('❌ EVENT LISTENER ERROR:', error);
+            }
+
+            // Add event listeners for ticket expansion (GitHub Pages compatible)
+            document.querySelectorAll('.expandable').forEach(row => {
+                row.addEventListener('click', function() {
+                    const ticketId = this.getAttribute('data-ticket-id');
+                    if (ticketId) {
+                        toggleDetails(ticketId);
+                    }
+                });
+            });
+
+            // Add event listener for share button (GitHub Pages compatible)
+            const shareBtn = document.getElementById('shareReportBtn');
+            if (shareBtn) {
+                shareBtn.addEventListener('click', function() {
+                    console.log('Share button clicked via event listener!');
+                    shareReport();
+                });
+            }
+
+            // Add event listener for print button (GitHub Pages compatible)
+            const printBtn = document.getElementById('printBtn');
+            if (printBtn) {
+                printBtn.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+
+            // Add event listeners for modal buttons (GitHub Pages compatible)
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', closeShareModal);
+            }
+
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            if (copyLinkBtn) {
+                copyLinkBtn.addEventListener('click', copyShareLink);
+            }
+
+            const copyBackupLinkBtn = document.getElementById('copyBackupLinkBtn');
+            if (copyBackupLinkBtn) {
+                copyBackupLinkBtn.addEventListener('click', copyBackupLink);
+            }
+
+            const shareEmailBtn = document.getElementById('shareEmailBtn');
+            if (shareEmailBtn) {
+                shareEmailBtn.addEventListener('click', shareViaEmail);
+            }
+
+            const shareSlackBtn = document.getElementById('shareSlackBtn');
+            if (shareSlackBtn) {
+                shareSlackBtn.addEventListener('click', shareViaSlack);
+            }
+
+            const shareTeamsBtn = document.getElementById('shareTeamsBtn');
+            if (shareTeamsBtn) {
+                shareTeamsBtn.addEventListener('click', shareViaTeams);
+            }
+
+            const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
+            if (shareWhatsAppBtn) {
+                shareWhatsAppBtn.addEventListener('click', shareViaWhatsApp);
+            }
+
+            // Add event listeners for search buttons (GitHub Pages compatible)
+            const searchBtn = document.getElementById('searchBtn');
+            if (searchBtn) {
+                searchBtn.addEventListener('click', performSearch);
+            }
+
+            const clearBtn = document.getElementById('clearBtn');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', clearSearch);
+            }
+        });
+    </script>
+</body>
+</html>
