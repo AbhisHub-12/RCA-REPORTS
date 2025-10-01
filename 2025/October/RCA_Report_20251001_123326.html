@@ -602,11 +602,11 @@
 <body>
     <!-- Download and Share Buttons -->
     <div class="download-container">
-        <button class="download-btn" onclick="window.print()" title="Print / Save as PDF">
+        <button class="download-btn" id="printBtn" title="Print / Save as PDF">
             <span class="download-icon">🖨️</span>
             <span>Print</span>
         </button>
-        <button class="share-btn" onclick="shareReport(); console.log('Button clicked!');" title="Share Report Link">
+        <button class="share-btn" id="shareReportBtn" title="Share Report Link">
             <span class="share-icon">🔗</span>
             <span>Share Link</span>
         </button>
@@ -618,7 +618,7 @@
         <div style="background:white; border-radius:12px; padding:25px; max-width:500px;
                     width:90%; max-height:80vh; overflow:auto; position:fixed;
                     top:50%; left:50%; transform:translate(-50%, -50%);">
-            <button onclick="closeShareModal()"
+            <button id="closeModalBtn"
                     style="position:absolute; top:15px; right:15px; background:none;
                            border:none; font-size:24px; cursor:pointer; color:#6b7280;">×</button>
             <h3 style="margin:0 0 20px 0; color:#374151;">Share RCA Report</h3>
@@ -629,7 +629,7 @@
                     <input id="shareUrl" type="text" readonly
                            style="flex:1; padding:10px; border:1px solid #e5e7eb; border-radius:6px;
                                   background:#f9fafb; font-family:monospace; font-size:13px;">
-                    <button onclick="copyShareLink()"
+                    <button id="copyLinkBtn"
                             style="padding:10px 20px; background:#7c3aed; color:white;
                                    border:none; border-radius:6px; cursor:pointer;
                                    font-weight:500; white-space:nowrap;">
@@ -644,25 +644,25 @@
             <div style="margin-bottom:20px;">
                 <label style="display:block; margin-bottom:12px; color:#6b7280; font-size:14px;">Quick Share:</label>
                 <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px;">
-                    <button onclick="shareViaEmail()"
+                    <button id="shareEmailBtn"
                             style="padding:12px; background:#f3f4f6; border:1px solid #e5e7eb;
                                    border-radius:6px; cursor:pointer; display:flex; align-items:center;
                                    justify-content:center; gap:8px; transition:background 0.2s;">
                         <span>📧</span> Email
                     </button>
-                    <button onclick="shareViaSlack()"
+                    <button id="shareSlackBtn"
                             style="padding:12px; background:#f3f4f6; border:1px solid #e5e7eb;
                                    border-radius:6px; cursor:pointer; display:flex; align-items:center;
                                    justify-content:center; gap:8px; transition:background 0.2s;">
                         <span>💬</span> Slack
                     </button>
-                    <button onclick="shareViaTeams()"
+                    <button id="shareTeamsBtn"
                             style="padding:12px; background:#f3f4f6; border:1px solid #e5e7eb;
                                    border-radius:6px; cursor:pointer; display:flex; align-items:center;
                                    justify-content:center; gap:8px; transition:background 0.2s;">
                         <span>👥</span> Teams
                     </button>
-                    <button onclick="shareViaWhatsApp()"
+                    <button id="shareWhatsAppBtn"
                             style="padding:12px; background:#f3f4f6; border:1px solid #e5e7eb;
                                    border-radius:6px; cursor:pointer; display:flex; align-items:center;
                                    justify-content:center; gap:8px; transition:background 0.2s;">
@@ -719,12 +719,12 @@
         <div class="search-container">
             <input type="text" class="search-input" id="searchInput"
                    placeholder="Search by ticket title, customer name, or status...">
-            <button class="search-btn" onclick="performSearch()"
+            <button class="search-btn" id="searchBtn"
                     style="background: #7c3aed; color: white; padding: 12px 30px;
                            border: none; border-radius: 8px; cursor: pointer; margin: 0 5px;">
                 🔍 Search
             </button>
-            <button class="clear-btn" onclick="clearSearch()"
+            <button class="clear-btn" id="clearBtn"
                     style="background: #dc2626; color: white; padding: 12px 30px;
                            border: none; border-radius: 8px; cursor: pointer; margin: 0 5px;">
                 🔄 Clear
@@ -751,7 +751,7 @@
                     <th width="120">Status</th>
                     <th width="150">Owner</th>
                 </tr>
-                <tr class="expandable" onclick="toggleDetails('MoveInSync_1')">
+                <tr class="expandable" data-ticket-id="MoveInSync_1">
                     <td><span class="expand-indicator">▶</span> 1</td>
                     <td>Unable to attach EFS to pod</td>
                     <td><a href="https://app.clickup.com/t/86d09jha0" 
@@ -1134,6 +1134,75 @@
             console.log('✅ ToggleDetails function:', typeof toggleDetails);
             console.log('✅ Share modal element:', document.getElementById('shareModal') ? 'Found' : 'Not Found');
             console.log('✅ Cloud URLs:', window.reportCloudUrls);
+        
+            // Add event listeners for ticket expansion (GitHub Pages compatible)
+            document.querySelectorAll('.expandable').forEach(row => {
+                row.addEventListener('click', function() {
+                    const ticketId = this.getAttribute('data-ticket-id');
+                    if (ticketId) {
+                        toggleDetails(ticketId);
+                    }
+                });
+            });
+
+            // Add event listener for share button (GitHub Pages compatible)
+            const shareBtn = document.getElementById('shareReportBtn');
+            if (shareBtn) {
+                shareBtn.addEventListener('click', function() {
+                    console.log('Share button clicked via event listener!');
+                    shareReport();
+                });
+            }
+
+            // Add event listener for print button (GitHub Pages compatible)
+            const printBtn = document.getElementById('printBtn');
+            if (printBtn) {
+                printBtn.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+
+            // Add event listeners for modal buttons (GitHub Pages compatible)
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', closeShareModal);
+            }
+
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            if (copyLinkBtn) {
+                copyLinkBtn.addEventListener('click', copyShareLink);
+            }
+
+            const shareEmailBtn = document.getElementById('shareEmailBtn');
+            if (shareEmailBtn) {
+                shareEmailBtn.addEventListener('click', shareViaEmail);
+            }
+
+            const shareSlackBtn = document.getElementById('shareSlackBtn');
+            if (shareSlackBtn) {
+                shareSlackBtn.addEventListener('click', shareViaSlack);
+            }
+
+            const shareTeamsBtn = document.getElementById('shareTeamsBtn');
+            if (shareTeamsBtn) {
+                shareTeamsBtn.addEventListener('click', shareViaTeams);
+            }
+
+            const shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
+            if (shareWhatsAppBtn) {
+                shareWhatsAppBtn.addEventListener('click', shareViaWhatsApp);
+            }
+
+            // Add event listeners for search buttons (GitHub Pages compatible)
+            const searchBtn = document.getElementById('searchBtn');
+            if (searchBtn) {
+                searchBtn.addEventListener('click', performSearch);
+            }
+
+            const clearBtn = document.getElementById('clearBtn');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', clearSearch);
+            }
         });
     </script>
 </body>
