@@ -1061,7 +1061,7 @@
         });
 
         // Cloud URLs will be injected here after upload
-        window.reportCloudUrls = {{}};
+        window.reportCloudUrls = {"github_repo": {"repo_url": "https://github.com/AbhisHub-12/RCA-REPORTS/blob/main/2025/October/RCA_Report_20251001_130803.html", "raw_url": "https://raw.githubusercontent.com/AbhisHub-12/RCA-REPORTS/main/2025/October/RCA_Report_20251001_130803.html", "preview_url": "https://htmlpreview.github.io/?https://raw.githubusercontent.com/AbhisHub-12/RCA-REPORTS/main/2025/October/RCA_Report_20251001_130803.html", "github_pages_url": "https://abhishub-12.github.io/RCA-REPORTS/2025/October/RCA_Report_20251001_130803.html", "path": "2025/October/RCA_Report_20251001_130803.html", "sha": "5f23593084a37cb3368534dd036e89793c8449c8"}, "github_gist": {"gist_url": "https://gist.github.com/AbhisHub-12/cceb8e4edae26933d0474ec346bc1355", "preview_url": "https://htmlpreview.github.io/?https://gist.githubusercontent.com/AbhisHub-12/cceb8e4edae26933d0474ec346bc1355/raw/RCA_Report_20251001_130803.html", "raw_url": "https://gist.githubusercontent.com/AbhisHub-12/cceb8e4edae26933d0474ec346bc1355/raw/RCA_Report_20251001_130803.html"}};
 
         // Share functionality
         function shareReport() {
@@ -1148,7 +1148,7 @@
         function shareViaEmail() {
             const url = document.getElementById('shareUrl').value;
             const subject = encodeURIComponent('RCA Report - ' + document.title);
-            const body = encodeURIComponent('Here is the RCA report:\n\n' + url);
+            const body = encodeURIComponent('Here is the RCA report:\\n\\n' + url);
             window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
         }
 
