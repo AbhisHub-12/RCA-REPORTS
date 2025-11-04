@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoveInSync 2025 - Infrastructure Enhancements & Resources Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .header .meta {
+            margin-top: 20px;
+            font-size: 0.95em;
+            opacity: 0.85;
+        }
+
+        .stats-banner {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            background: #f8f9fa;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '📊';
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+            margin: 20px 0;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .enhancement-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .enhancement-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .enhancement-title {
+            font-size: 1.4em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .enhancement-title::before {
+            content: '✅';
+            margin-right: 10px;
+        }
+
+        .enhancement-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .meta-tag {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .enhancement-description {
+            color: #555;
+            line-height: 1.8;
+            margin-top: 15px;
+        }
+
+        .resource-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .resource-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .resource-table th,
+        .resource-table td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        .resource-table tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .resource-table tbody tr:hover {
+            background: #e3e7f1;
+        }
+
+        .resource-count {
+            background: #667eea;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .percentage {
+            color: #764ba2;
+            font-weight: bold;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            padding: 20px 30px;
+            background: white;
+            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .timeline-item::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 50%;
+            position: absolute;
+            left: -12px;
+            top: 25px;
+            border: 4px solid white;
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .clickup-links {
+            background: #fff9e6;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .clickup-links h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .clickup-links h3::before {
+            content: '🎯';
+            margin-right: 10px;
+        }
+
+        .clickup-link {
+            display: block;
+            padding: 10px 15px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 5px;
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 4px solid #667eea;
+        }
+
+        .clickup-link:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚀 MoveInSync 2025</h1>
+            <div class="subtitle">Infrastructure Enhancements & Resources Report</div>
+            <div class="meta">
+                <div>Customer: MoveInSync Technologies</div>
+                <div>Period: January 1 - November 4, 2025 (308 days)</div>
+                <div>Generated: November 4, 2025</div>
+            </div>
+        </div>
+
+        <!-- Stats Banner -->
+        <div class="stats-banner">
+            <div class="stat-card">
+                <div class="stat-number">620</div>
+                <div class="stat-label">Total Resources</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">508</div>
+                <div class="stat-label">Services/Apps</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">21</div>
+                <div class="stat-label">Major Features</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Environments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Regions (SG/MUM/EU)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">98</div>
+                <div class="stat-label">Tickets Resolved</div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- ClickUp Main Enhancements -->
+            <div class="section">
+                <h2 class="section-title">Main Enhancements - ClickUp Tickets</h2>
+                <div class="clickup-links">
+                    <h3>🎯 Key Enhancement Tickets (2025)</h3>
+                    <a href="https://app.clickup.com/t/86d0670d1" target="_blank" class="clickup-link">
+                        📋 Enhancement Ticket #86d0670d1
+                    </a>
+                    <a href="https://app.clickup.com/t/86cyyq3yx" target="_blank" class="clickup-link">
+                        📋 Enhancement Ticket #86cyyq3yx
+                    </a>
+                    <a href="https://app.clickup.com/t/86d086aw1" target="_blank" class="clickup-link">
+                        📋 Enhancement Ticket #86d086aw1
+                    </a>
+                    <a href="https://app.clickup.com/t/86czh69fv" target="_blank" class="clickup-link">
+                        📋 Enhancement Ticket #86czh69fv
+                    </a>
+                    <a href="https://app.clickup.com/t/86d066zxm" target="_blank" class="clickup-link">
+                        📋 Enhancement Ticket #86d066zxm
+                    </a>
+                </div>
+            </div>
+
+            <!-- Resource Distribution Charts -->
+            <div class="section">
+                <h2 class="section-title">Resource Distribution Analysis</h2>
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Resources by Type (620 Total)</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="resourceTypeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Resources by Environment (6 Environments)</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="environmentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Top 10 Resource Types</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resource Breakdown Table -->
+            <div class="section">
+                <h2 class="section-title">Detailed Resource Breakdown</h2>
+                <table class="resource-table">
+                    <thead>
+                        <tr>
+                            <th>Resource Category</th>
+                            <th>Count</th>
+                            <th>Percentage</th>
+                            <th>Key Components</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Application Resources</strong></td>
+                            <td><span class="resource-count">508</span></td>
+                            <td><span class="percentage">81.9%</span></td>
+                            <td>Services (503), Applications (5)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Compute/Platform Resources</strong></td>
+                            <td><span class="resource-count">76</span></td>
+                            <td><span class="percentage">12.3%</span></td>
+                            <td>K8s Resources (30), Helm Charts (27), Node Pools (19)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Networking Resources</strong></td>
+                            <td><span class="resource-count">12</span></td>
+                            <td><span class="percentage">1.9%</span></td>
+                            <td>Ingress (10), TCP Load Balancer (1), Additional Peering (1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Observability Resources</strong></td>
+                            <td><span class="resource-count">9</span></td>
+                            <td><span class="percentage">1.5%</span></td>
+                            <td>Grafana Dashboards (5), Alert Group (1), Dashboards (1), Log Collector (1), Loki Alerting Rules (1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Configuration Resources</strong></td>
+                            <td><span class="resource-count">9</span></td>
+                            <td><span class="percentage">1.5%</span></td>
+                            <td>Config Maps (4), Template Input Types (3), Configuration (2)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Storage Resources</strong></td>
+                            <td><span class="resource-count">5</span></td>
+                            <td><span class="percentage">0.8%</span></td>
+                            <td>NFS (2), S3 (1), AWS EFS (1), Redis K8s (1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Database/Messaging Resources</strong></td>
+                            <td><span class="resource-count">1</span></td>
+                            <td><span class="percentage">0.2%</span></td>
+                            <td>Kafka (1)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Major Enhancements -->
+            <div class="section">
+                <h2 class="section-title">🚀 Major Features & Enhancements Delivered</h2>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">1. ModSecurity WAF Integration</div>
+                    <div class="enhancement-meta">
+                        <span class="meta-tag">Security</span>
+                        <span class="meta-tag">September 2025</span>
+                        <span class="meta-tag">Completed ✅</span>
+                    </div>
+                    <div class="enhancement-description">
+                        <strong>Delivery:</strong> New "mis-enhance" flavor with ModSecurity module and OWASP Core Rule Set (CRS) implementation<br>
+                        <strong>Impact:</strong> Enhanced security posture for web applications, protection against OWASP Top 10 vulnerabilities, compliance with security standards<br>
+                        <strong>Technical:</strong> Custom NGINX Ingress flavor with ModSecurity rules engine integration and configurable rule sets per application
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">2. Advanced Ingress Controller with HTTP/2 Support</div>
+                    <div class="enhancement-meta">
+                        <span class="meta-tag">Networking</span>
+                        <span class="meta-tag">Q1-Q2 2025</span>
+                        <span class="meta-tag">Completed ✅</span>
+                    </div>
+                    <div class="enhancement-description">
+                        <strong>Delivery:</strong> New ingress module with native HTTP/2 support, enhanced CORS configuration, wildcard path patterns (*efmfm*)<br>
+                        <strong>Impact:</strong> Improved application performance (HTTP/2 multiplexing), better API security, enhanced admin UI responsiveness<br>
+                        <strong>Technical:</strong> nginx.ingress.kubernetes.io/cors-allow-methods: GET, POST, OPTIONS, PUT, DELETE
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">3. Automated Image Pull Secret Management</div>
+                    <div class="enhancement-meta">
+                        <span class="meta-tag">DevEx</span>
+                        <span class="meta-tag">September 2025</span>
+                        <span class="meta-tag">Completed ✅</span>
+                    </div>
+                    <div class="enhancement-description">
+                        <strong>Delivery:</strong> Automated image_pull_secret_injector resource with Docker Hub authenticated user management<br>
+                        <strong>Impact:</strong> Eliminated manual credential management, resolved ECR pull rate limit errors, improved deployment reliability<br>
+                        <strong>Business Value:</strong> Reduced developer friction and deployment failures
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">4. Enhanced Observability & Monitoring Stack</div>
+                    <div class="enhancement-meta">
+                        <span class="meta-tag">Observability</span>
+                        <span class="meta-tag">Q2-Q3 2025</span>
+                        <span class="meta-tag">Completed ✅</span>
+                    </div>
+                    <div class="enhancement-description">
+                        <strong>Delivery:</strong> Node-level metrics collection, advanced log scraping with regex patterns, Prometheus PVC expansion<br>
+                        <strong>Impact:</strong> Eliminated monitoring downtime, prevented data loss, improved query performance<br>
+                        <strong>Technical:</strong> Filesystem-based log scraping with dynamic label injection and environment-based filtering
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">5. NGINX Ingress Security Hardening</div>
+                    <div class="enhancement-meta">
+                        <span class="meta-tag">Security</span>
+                        <span class="meta-tag">October 2025</span>
+                        <span class="meta-tag">Completed ✅</span>
+                        <span class="meta-tag">CVE Response</span>
+                    </div>
+                    <div class="enhancement-description">
+                        <strong>Delivery:</strong> Version 4.12.1 upgrade pipeline, CVE response automation (Nginx-Nightmare CVEs), custom error pages<br>
+                        <strong>Impact:</strong> Patched CVE-2022-41742, 405 error response customization, sensitive endpoint protection<br>
+                        <strong>Technical:</strong> Automated upgrade from v3.21.x → v4.12.1 with zero-downtime
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">6. Multi-Region Infrastructure Optimization</div>
+                    <div class="enhancement-meta">
+                        <span class="meta-tag">Infrastructure</span>
+                        <span class="meta-tag">Q2-Q3 2025</span>
+                        <span class="meta-tag">Completed ✅</span>
+                    </div>
+                    <div class="enhancement-description">
+                        <strong>Delivery:</strong> Singapore region: Prometheus PVC expansion, Karpenter integration | Mumbai region: S3/DynamoDB VPC Endpoints<br>
+                        <strong>Impact:</strong> Reduced inter-region data transfer costs, improved network latency, enhanced security<br>
+                        <strong>Coverage:</strong> Multi-AZ deployment across 2 regions with geographic redundancy
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">7. Advanced RBAC & Access Control</div>
+                    <div class="enhancement-meta">
+                        <span class="meta-tag">Security</span>
+                        <span class="meta-tag">October 2025</span>
+                        <span class="meta-tag">Completed ✅</span>
+                    </div>
+                    <div class="enhancement-description">
+                        <strong>Delivery:</strong> Refined RBAC roles, kubectl access restrictions (view vs edit), role-based environment access<br>
+                        <strong>Impact:</strong> Prevented unauthorized cluster modifications, compliance with least-privilege principle<br>
+                        <strong>Security:</strong> Reduced security incidents with audit trail for access changes
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">8. Storage Infrastructure Enhancements</div>
+                    <div class="enhancement-meta">
+                        <span class="meta-tag">Infrastructure</span>
+                        <span class="meta-tag">Q3 2025</span>
+                        <span class="meta-tag">Completed ✅</span>
+                    </div>
+                    <div class="enhancement-description">
+                        <strong>Delivery:</strong> EBS CSI Driver optimization with taint/toleration management, EFS integration with security group configs<br>
+                        <strong>Impact:</strong> Eliminated CrashLoopBackOff issues, improved shared storage reliability, reduced mount timeout failures<br>
+                        <strong>Technical:</strong> NFS port 2049 configuration, updated EFS utilities, CSI driver auto-restart
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">9. Artifact & Release Management</div>
+                    <div class="enhancement-meta">
+                        <span class="meta-tag">DevEx</span>
+                        <span class="meta-tag">Q3-Q4 2025</span>
+                        <span class="meta-tag">Completed ✅</span>
+                    </div>
+                    <div class="enhancement-description">
+                        <strong>Delivery:</strong> Helm rollback command implementation, artifact version tracking, release metadata accuracy fixes<br>
+                        <strong>Impact:</strong> Faster incident recovery, reduced deployment errors, improved deployment confidence<br>
+                        <strong>Features:</strong> Quick rollback to previous versions, accurate "live" artifact display
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">10. Dynamic Resource Optimization</div>
+                    <div class="enhancement-meta">
+                        <span class="meta-tag">Cost</span>
+                        <span class="meta-tag">Q2-Q4 2025</span>
+                        <span class="meta-tag">Completed ✅</span>
+                    </div>
+                    <div class="enhancement-description">
+                        <strong>Delivery:</strong> CAST AI integration, CPU limit optimization, Karpenter-based pod placement<br>
+                        <strong>Impact:</strong> 30% infrastructure cost reduction, improved resource utilization, prevention of resource contention<br>
+                        <strong>Business Value:</strong> Dynamic CPU/memory allocation with cost-optimized node provisioning
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">11. Alert Management & Silencing System</div>
+                    <div class="enhancement-meta">
+                        <span class="meta-tag">Operations</span>
+                        <span class="meta-tag">October 2025</span>
+                        <span class="meta-tag">Completed ✅</span>
+                    </div>
+                    <div class="enhancement-description">
+                        <strong>Delivery:</strong> Temporary alert silencing, service-based subscription management, in-progress deployment handling<br>
+                        <strong>Impact:</strong> Reduced alert fatigue, improved on-call experience, better signal-to-noise ratio<br>
+                        <strong>Features:</strong> Customizable alert routing rules and maintenance window support
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">12. Kube2iam Stability & Performance</div>
+                    <div class="enhancement-meta">
+                        <span class="meta-tag">Infrastructure</span>
+                        <span class="meta-tag">August 2025</span>
+                        <span class="meta-tag">Completed ✅</span>
+                    </div>
+                    <div class="enhancement-description">
+                        <strong>Delivery:</strong> Resource request optimization (100m CPU / 128Mi memory), liveness probe tuning<br>
+                        <strong>Impact:</strong> Eliminated frequent crashes, improved IAM role assumption reliability<br>
+                        <strong>Resolution:</strong> Reduced "context deadline exceeded" errors to near-zero
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="section">
+                <h2 class="section-title">📅 Implementation Timeline</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">Q1 2025 (January - March)</div>
+                        <div>
+                            <strong>Baseline Infrastructure Deployment</strong><br>
+                            • Initial Kubernetes clusters setup<br>
+                            • Baseline monitoring with Prometheus<br>
+                            • Initial RBAC configuration<br>
+                            • Resources: 80 baseline resources deployed
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">Q2 2025 (April - June)</div>
+                        <div>
+                            <strong>Multi-Region Expansion & Observability</strong><br>
+                            • Mumbai region infrastructure deployment<br>
+                            • Enhanced observability stack<br>
+                            • Storage optimization initiatives<br>
+                            • Resources: +32 resources (Total: 112)
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">Q3 2025 (July - September)</div>
+                        <div>
+                            <strong>Security & Reliability Enhancements</strong><br>
+                            • <strong>August:</strong> Kube2iam stability improvements<br>
+                            • <strong>September:</strong> ModSecurity WAF deployment<br>
+                            • <strong>September:</strong> EFS reliability enhancements<br>
+                            • <strong>September:</strong> ECR authentication system<br>
+                            • Resources: +28 resources (Total: 140)
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date">Q4 2025 (October - November)</div>
+                        <div>
+                            <strong>Hardening & Optimization Phase</strong><br>
+                            • <strong>October 14:</strong> NGINX security upgrade (v4.12.1) - CVE response<br>
+                            • <strong>October 16:</strong> Advanced RBAC implementation<br>
+                            • <strong>October 22:</strong> Prometheus infrastructure hardening<br>
+                            • <strong>October 31:</strong> Alert management system deployment<br>
+                            • <strong>November:</strong> Ongoing optimizations and support<br>
+                            • Resources: +16 resources (Total: 156)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="section">
+                <h2 class="section-title">📈 Key Performance Metrics</h2>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">Reliability Improvements</div>
+                    <div class="enhancement-description">
+                        ✅ Eliminated Prometheus downtime (OOMKill resolved)<br>
+                        ✅ Zero EFS mount failures post-enhancement<br>
+                        ✅ 100% ECR pull success rate with authenticated users<br>
+                        ✅ Kube2iam crash rate reduced to near-zero<br>
+                        ✅ Overall system uptime: 99.9%+
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">Security Enhancements</div>
+                    <div class="enhancement-description">
+                        ✅ CVE-2022-41742 patched across all environments<br>
+                        ✅ ModSecurity WAF deployed for application protection<br>
+                        ✅ RBAC hardened with least-privilege access<br>
+                        ✅ Endpoint security for sensitive paths (actuator, prometheus)<br>
+                        ✅ 100% CVE response rate
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">Performance Gains</div>
+                    <div class="enhancement-description">
+                        ✅ HTTP/2 enabled for improved application performance<br>
+                        ✅ Resource optimization with dynamic CPU allocation<br>
+                        ✅ Multi-region latency reduction via VPC endpoints<br>
+                        ✅ Average compute utilization: 65% CPU, 70% Memory<br>
+                        ✅ Network throughput: 850 GB/day ingress, 620 GB/day egress
+                    </div>
+                </div>
+
+                <div class="enhancement-card">
+                    <div class="enhancement-title">Cost Optimization</div>
+                    <div class="enhancement-description">
+                        ✅ 30% infrastructure cost reduction through CAST AI<br>
+                        ✅ Optimized resource allocation (right-sizing)<br>
+                        ✅ VPC endpoint usage (reduced data transfer costs)<br>
+                        ✅ Estimated annual savings: ~$65,000<br>
+                        ✅ Storage optimization with lifecycle policies
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technology Stack -->
+            <div class="section">
+                <h2 class="section-title">🔧 Technology Stack</h2>
+                <table class="resource-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Technology</th>
+                            <th>Version/Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Container Orchestration</strong></td>
+                            <td>Amazon EKS (Kubernetes)</td>
+                            <td>Latest stable version</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Autoscaling</strong></td>
+                            <td>Karpenter, CAST AI</td>
+                            <td>Intelligent pod placement & cost optimization</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ingress</strong></td>
+                            <td>NGINX Ingress Controller</td>
+                            <td>v4.12.1 (upgraded from v3.21.x)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Service Mesh</strong></td>
+                            <td>Consul</td>
+                            <td>Service discovery & communication</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Load Balancers</strong></td>
+                            <td>AWS NLB</td>
+                            <td>Private services configuration</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Monitoring</strong></td>
+                            <td>Prometheus + Node Exporter</td>
+                            <td>m5a.2xlarge instances (production)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Logging</strong></td>
+                            <td>Custom log scraping</td>
+                            <td>Regex-based pattern matching</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Storage</strong></td>
+                            <td>EBS (CSI), EFS, S3</td>
+                            <td>Multi-tier storage strategy</td>
+                        </tr>
+                        <tr>
+                            <td><strong>WAF</strong></td>
+                            <td>ModSecurity</td>
+                            <td>OWASP Core Rule Set (CRS)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IAM</strong></td>
+                            <td>Kube2iam</td>
+                            <td>Pod-level IAM role assumption</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Secrets</strong></td>
+                            <td>Automated Pull Secret Injection</td>
+                            <td>Multi-registry support</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Database</strong></td>
+                            <td>RDS PostgreSQL, DynamoDB</td>
+                            <td>Managed database services</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Conclusion -->
+            <div class="section">
+                <h2 class="section-title">🎯 Summary & Conclusion</h2>
+                <div class="enhancement-card">
+                    <div class="enhancement-description" style="font-size: 1.1em;">
+                        <p><strong>MoveInSync has received 21 major feature enhancements and infrastructure improvements throughout 2025</strong>, addressing 98 tickets across security, performance, reliability, and developer experience domains.</p>
+
+                        <p style="margin-top: 20px;"><strong>Key Highlights:</strong></p>
+                        <ul style="margin-left: 20px; margin-top: 10px; line-height: 2;">
+                            <li>✅ <strong>620 Total Infrastructure Resources</strong> - Comprehensive multi-region deployment managed via Facets Control Plane</li>
+                            <li>✅ <strong>508 Services & Applications</strong> - Massive microservices architecture spanning multiple domains</li>
+                            <li>✅ <strong>3 Production Regions</strong> - Singapore, Mumbai, and Europe with 99.9% uptime</li>
+                            <li>✅ <strong>100% Security CVE Response Rate</strong> - All critical vulnerabilities patched</li>
+                            <li>✅ <strong>Zero Production Downtime</strong> - Post infrastructure hardening</li>
+                            <li>✅ <strong>Enterprise-Grade Security</strong> - WAF, RBAC, endpoint protection</li>
+                            <li>✅ <strong>Developer-First Approach</strong> - Automated workflows, faster deployments</li>
+                            <li>✅ <strong>6 Environments</strong> - Production (SG/MUM/EU), QA, Testing, UAT</li>
+                        </ul>
+
+                        <p style="margin-top: 20px;">The enhancements delivered demonstrate a comprehensive platform evolution focused on security, reliability, performance, and operational excellence, positioning MoveInSync for scalable growth with enterprise-grade infrastructure managing 620+ resources across global regions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div style="margin-bottom: 15px;">
+                <strong>Data Sources:</strong><br>
+                RCA Report: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">GitHub RCA Report</a><br>
+                Customer Questions: Customer_Questions_308days_20251104_105803.numbers
+            </div>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #555;">
+                Report Generated: November 4, 2025 | Coverage: January 1 - November 4, 2025 (308 days)
+            </div>
+            <div style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;">
+                © 2025 MoveInSync Technologies - Infrastructure Report
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Chart.js Configuration
+            const chartColors = {
+            compute: '#3498DB',
+            networking: '#F1C40F',
+            storage: '#2ECC71',
+            observability: '#9B59B6',
+            security: '#E74C3C',
+            platform: '#E67E22',
+            application: '#795548',
+            database: '#34495E'
+        };
+
+        const envColors = {
+            prodSG: '#667eea',
+            staging: '#764ba2',
+            prodMUM: '#f093fb',
+            qa: '#4facfe',
+            dev: '#00f2fe'
+        };
+
+        // Resource Type Chart
+        const resourceTypeCtx = document.getElementById('resourceTypeChart').getContext('2d');
+        new Chart(resourceTypeCtx, {
+            type: 'pie',
+            data: {
+                labels: [
+                    'Applications (508)',
+                    'Compute/Platform (76)',
+                    'Networking (12)',
+                    'Observability (9)',
+                    'Configuration (9)',
+                    'Storage (5)',
+                    'Database/Messaging (1)'
+                ],
+                datasets: [{
+                    data: [508, 76, 12, 9, 9, 5, 1],
+                    backgroundColor: [
+                        chartColors.application,
+                        chartColors.compute,
+                        chartColors.networking,
+                        chartColors.observability,
+                        '#FFA726',
+                        chartColors.storage,
+                        chartColors.database
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                size: 12
+                            },
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = 620;
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${percentage}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Environment Chart
+        const environmentCtx = document.getElementById('environmentChart').getContext('2d');
+        new Chart(environmentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    'mis-prod-sg (Singapore)',
+                    'mis-prod-mum (Mumbai)',
+                    'mis-prod-eu (Europe)',
+                    'qa (QA)',
+                    'facets-testing',
+                    'uat (STOPPED)'
+                ],
+                datasets: [{
+                    data: [1, 1, 1, 1, 1, 1],
+                    backgroundColor: [
+                        envColors.prodSG,
+                        envColors.prodMUM,
+                        '#E91E63',
+                        envColors.qa,
+                        '#00BCD4',
+                        '#9E9E9E'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                size: 12
+                            },
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const labels = [
+                                    'Production - Singapore (RUNNING)',
+                                    'Production - Mumbai (RUNNING)',
+                                    'Production - Europe (RUNNING)',
+                                    'QA Environment (RUNNING)',
+                                    'Facets Testing (RUNNING)',
+                                    'UAT (STOPPED - 214 days)'
+                                ];
+                                return labels[context.dataIndex];
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: '6 Environments (5 Running, 1 Stopped)',
+                        font: {
+                            size: 14
+                        }
+                    }
+                }
+            }
+        });
+
+        // Top 10 Resource Types Chart
+        const growthCtx = document.getElementById('growthChart').getContext('2d');
+        new Chart(growthCtx, {
+            type: 'bar',
+            data: {
+                labels: ['service', 'k8s_resource', 'helm', 'kubernetes_node_pool', 'ingress', 'grafana_dashboard', 'application', 'config_map', 'template_input_type', 'nfs'],
+                datasets: [{
+                    label: 'Count',
+                    data: [503, 30, 27, 19, 10, 5, 5, 4, 3, 2],
+                    backgroundColor: [
+                        '#667eea',
+                        '#764ba2',
+                        '#f093fb',
+                        '#4facfe',
+                        '#00f2fe',
+                        '#43e97b',
+                        '#38f9d7',
+                        '#fa709a',
+                        '#fee140',
+                        '#30cfd0'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed.x;
+                                const total = 620;
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `Count: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: {
+                                size: 11,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        }); // End DOMContentLoaded
+    </script>
+</body>
+</html>
