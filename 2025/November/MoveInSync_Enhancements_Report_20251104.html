@@ -424,10 +424,18 @@
                     </div>
                 </div>
 
-                <div class="chart-container">
-                    <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Top 10 Resource Types</h3>
-                    <div class="chart-wrapper">
-                        <canvas id="growthChart"></canvas>
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Top 10 Resource Types</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="topResourcesChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Resource Growth Timeline 2025</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="growthChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1030,14 +1038,14 @@
             }
         });
 
-        // Top 10 Resource Types Chart
-        const growthCtx = document.getElementById('growthChart').getContext('2d');
-        new Chart(growthCtx, {
+        // Top 10 Resource Types Chart (Vertical Bar)
+        const topResourcesCtx = document.getElementById('topResourcesChart').getContext('2d');
+        new Chart(topResourcesCtx, {
             type: 'bar',
             data: {
-                labels: ['service', 'k8s_resource', 'helm', 'kubernetes_node_pool', 'ingress', 'grafana_dashboard', 'application', 'config_map', 'template_input_type', 'nfs'],
+                labels: ['service', 'k8s_resource', 'helm', 'node_pool', 'ingress', 'grafana', 'app', 'config', 'template', 'nfs'],
                 datasets: [{
-                    label: 'Count',
+                    label: 'Resource Count',
                     data: [503, 30, 27, 19, 10, 5, 5, 4, 3, 2],
                     backgroundColor: [
                         '#667eea',
@@ -1051,13 +1059,13 @@
                         '#fee140',
                         '#30cfd0'
                     ],
+                    borderRadius: 8,
                     borderWidth: 0
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                indexAxis: 'y',
                 plugins: {
                     legend: {
                         display: false
@@ -1065,7 +1073,7 @@
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                const value = context.parsed.x;
+                                const value = context.parsed.y;
                                 const total = 620;
                                 const percentage = ((value / total) * 100).toFixed(1);
                                 return `Count: ${value} (${percentage}%)`;
@@ -1074,7 +1082,7 @@
                     }
                 },
                 scales: {
-                    x: {
+                    y: {
                         beginAtZero: true,
                         ticks: {
                             font: {
@@ -1085,10 +1093,89 @@
                             color: 'rgba(0, 0, 0, 0.05)'
                         }
                     },
-                    y: {
+                    x: {
                         ticks: {
                             font: {
                                 size: 11,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Resource Growth Timeline Chart
+        const growthCtx = document.getElementById('growthChart').getContext('2d');
+        new Chart(growthCtx, {
+            type: 'line',
+            data: {
+                labels: ['Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025 (Current)'],
+                datasets: [{
+                    label: 'Total Resources',
+                    data: [450, 520, 580, 620],
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 8,
+                    pointHoverRadius: 10,
+                    pointBackgroundColor: '#667eea',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.parsed.y;
+                                const prevValue = context.dataIndex > 0 ? context.dataset.data[context.dataIndex - 1] : 450;
+                                const growth = context.dataIndex > 0 ? ((value - prevValue) / prevValue * 100).toFixed(1) : 0;
+                                return [
+                                    `Resources: ${value}`,
+                                    context.dataIndex > 0 ? `Growth: +${growth}% from previous quarter` : 'Baseline'
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 400,
+                        max: 650,
+                        ticks: {
+                            stepSize: 50,
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 12,
                                 weight: 'bold'
                             }
                         },
