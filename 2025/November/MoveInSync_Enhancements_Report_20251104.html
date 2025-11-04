@@ -406,98 +406,6 @@
                 </div>
             </div>
 
-            <!-- Resource Distribution Charts -->
-            <div class="section">
-                <h2 class="section-title">Resource Distribution Analysis</h2>
-                <div class="charts-grid">
-                    <div class="chart-container">
-                        <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Resources by Type (620 Total)</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="resourceTypeChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Resources by Environment (6 Environments)</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="environmentChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="charts-grid">
-                    <div class="chart-container">
-                        <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Top 10 Resource Types</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="topResourcesChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Resource Growth Timeline 2025</h3>
-                        <div class="chart-wrapper">
-                            <canvas id="growthChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Resource Breakdown Table -->
-            <div class="section">
-                <h2 class="section-title">Detailed Resource Breakdown</h2>
-                <table class="resource-table">
-                    <thead>
-                        <tr>
-                            <th>Resource Category</th>
-                            <th>Count</th>
-                            <th>Percentage</th>
-                            <th>Key Components</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Application Resources</strong></td>
-                            <td><span class="resource-count">508</span></td>
-                            <td><span class="percentage">81.9%</span></td>
-                            <td>Services (503), Applications (5)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Compute/Platform Resources</strong></td>
-                            <td><span class="resource-count">76</span></td>
-                            <td><span class="percentage">12.3%</span></td>
-                            <td>K8s Resources (30), Helm Charts (27), Node Pools (19)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Networking Resources</strong></td>
-                            <td><span class="resource-count">12</span></td>
-                            <td><span class="percentage">1.9%</span></td>
-                            <td>Ingress (10), TCP Load Balancer (1), Additional Peering (1)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Observability Resources</strong></td>
-                            <td><span class="resource-count">9</span></td>
-                            <td><span class="percentage">1.5%</span></td>
-                            <td>Grafana Dashboards (5), Alert Group (1), Dashboards (1), Log Collector (1), Loki Alerting Rules (1)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Configuration Resources</strong></td>
-                            <td><span class="resource-count">9</span></td>
-                            <td><span class="percentage">1.5%</span></td>
-                            <td>Config Maps (4), Template Input Types (3), Configuration (2)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Storage Resources</strong></td>
-                            <td><span class="resource-count">5</span></td>
-                            <td><span class="percentage">0.8%</span></td>
-                            <td>NFS (2), S3 (1), AWS EFS (1), Redis K8s (1)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Database/Messaging Resources</strong></td>
-                            <td><span class="resource-count">1</span></td>
-                            <td><span class="percentage">0.2%</span></td>
-                            <td>Kafka (1)</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
 
             <!-- Major Enhancements -->
             <div class="section">
@@ -633,14 +541,14 @@
                 <div class="enhancement-card">
                     <div class="enhancement-title">10. Dynamic Resource Optimization</div>
                     <div class="enhancement-meta">
-                        <span class="meta-tag">Cost</span>
+                        <span class="meta-tag">Infrastructure</span>
                         <span class="meta-tag">Q2-Q4 2025</span>
                         <span class="meta-tag">Completed ✅</span>
                     </div>
                     <div class="enhancement-description">
-                        <strong>Delivery:</strong> CAST AI integration, CPU limit optimization, Karpenter-based pod placement<br>
-                        <strong>Impact:</strong> 30% infrastructure cost reduction, improved resource utilization, prevention of resource contention<br>
-                        <strong>Business Value:</strong> Dynamic CPU/memory allocation with cost-optimized node provisioning
+                        <strong>Delivery:</strong> CPU limit optimization, Karpenter-based pod placement, 19 dedicated node pools for workload isolation<br>
+                        <strong>Impact:</strong> Improved resource utilization, prevention of resource contention, workload-specific node configurations<br>
+                        <strong>Business Value:</strong> Dynamic CPU/memory allocation with optimized node provisioning across t3a, r5a, and m5a instance families
                     </div>
                 </div>
 
@@ -764,13 +672,13 @@
                 </div>
 
                 <div class="enhancement-card">
-                    <div class="enhancement-title">Cost Optimization</div>
+                    <div class="enhancement-title">Infrastructure Optimization & Management</div>
                     <div class="enhancement-description">
-                        ✅ 30% infrastructure cost reduction through CAST AI<br>
-                        ✅ Optimized resource allocation (right-sizing)<br>
-                        ✅ VPC endpoint usage (reduced data transfer costs)<br>
-                        ✅ Estimated annual savings: ~$65,000<br>
-                        ✅ Storage optimization with lifecycle policies
+                        ✅ <strong>620 Total Resources</strong> managed via Facets Control Plane<br>
+                        ✅ <strong>19 Node Pools</strong> across multiple environments for workload isolation<br>
+                        ✅ <strong>VPC Endpoints</strong> deployed (S3, DynamoDB) for secure private connectivity<br>
+                        ✅ <strong>Kubecost</strong> infrastructure deployed for cost visibility and monitoring<br>
+                        ✅ <strong>Multiple instance types</strong> optimized per workload (t3a, r5a, m5a families)
                     </div>
                 </div>
             </div>
@@ -794,8 +702,8 @@
                         </tr>
                         <tr>
                             <td><strong>Autoscaling</strong></td>
-                            <td>Karpenter, CAST AI</td>
-                            <td>Intelligent pod placement & cost optimization</td>
+                            <td>Karpenter</td>
+                            <td>Intelligent pod placement & node provisioning</td>
                         </tr>
                         <tr>
                             <td><strong>Ingress</strong></td>
@@ -868,9 +776,11 @@
                             <li>✅ <strong>Enterprise-Grade Security</strong> - WAF, RBAC, endpoint protection</li>
                             <li>✅ <strong>Developer-First Approach</strong> - Automated workflows, faster deployments</li>
                             <li>✅ <strong>6 Environments</strong> - Production (SG/MUM/EU), QA, Testing, UAT</li>
+                            <li>✅ <strong>19 Node Pools</strong> - Workload isolation and optimization across environments</li>
+                            <li>✅ <strong>Kubecost Monitoring</strong> - Infrastructure cost visibility and tracking</li>
                         </ul>
 
-                        <p style="margin-top: 20px;">The enhancements delivered demonstrate a comprehensive platform evolution focused on security, reliability, performance, and operational excellence, positioning MoveInSync for scalable growth with enterprise-grade infrastructure managing 620+ resources across global regions.</p>
+                        <p style="margin-top: 20px;">The enhancements delivered demonstrate a comprehensive platform evolution focused on security, reliability, performance, and operational excellence, positioning MoveInSync for scalable growth with enterprise-grade infrastructure managing 620+ resources across 3 global regions.</p>
                     </div>
                 </div>
             </div>
