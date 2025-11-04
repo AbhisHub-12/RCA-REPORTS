@@ -353,33 +353,6 @@
             </div>
         </div>
 
-        <!-- Stats Banner -->
-        <div class="stats-banner">
-            <div class="stat-card">
-                <div class="stat-number">620</div>
-                <div class="stat-label">Total Resources</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">508</div>
-                <div class="stat-label">Services/Apps</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">21</div>
-                <div class="stat-label">Major Features</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">6</div>
-                <div class="stat-label">Environments</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">3</div>
-                <div class="stat-label">Regions (SG/MUM/EU)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">98</div>
-                <div class="stat-label">Tickets Resolved</div>
-            </div>
-        </div>
 
         <!-- Content -->
         <div class="content">
@@ -389,19 +362,19 @@
                 <div class="clickup-links">
                     <h3>🎯 Key Enhancement Tickets (2025)</h3>
                     <a href="https://app.clickup.com/t/86d0670d1" target="_blank" class="clickup-link">
-                        🔒 ModSecurity module for Dev and Stage Ingress (#86d0670d1)
+                        1. ModSecurity module for Dev and Stage Ingress (#86d0670d1)
                     </a>
                     <a href="https://app.clickup.com/t/86cyyq3yx" target="_blank" class="clickup-link">
-                        ✅ Add Startup Probe to services in prod (#86cyyq3yx)
+                        2. Add Startup Probe to services in prod (#86cyyq3yx)
                     </a>
                     <a href="https://app.clickup.com/t/86d086aw1" target="_blank" class="clickup-link">
-                        🌐 Preview-ingress mis-prod-sg - Ingress rule for VMS service (#86d086aw1)
+                        3. Preview-ingress mis-prod-sg - Ingress rule for VMS service (#86d086aw1)
                     </a>
                     <a href="https://app.clickup.com/t/86czh69fv" target="_blank" class="clickup-link">
-                        🔄 Migrate ingress rules from moveinsync-nlb to preview-ingress in dev (#86czh69fv)
+                        4. Migrate ingress rules from moveinsync-nlb to preview-ingress in dev (#86czh69fv)
                     </a>
                     <a href="https://app.clickup.com/t/86d066zxm" target="_blank" class="clickup-link">
-                        ⚡ ngx_brotli module in Dev and Stage ingress (#86d066zxm)
+                        5. ngx_brotli module in Dev and Stage ingress (#86d066zxm)
                     </a>
                 </div>
             </div>
@@ -641,68 +614,52 @@
                 <div class="enhancement-card">
                     <div class="enhancement-title">Reliability Improvements</div>
                     <div class="enhancement-description">
-                        ✅ <strong>Prometheus downtime eliminated</strong> - Resolved OOMKilled errors by upgrading instance type (m5a.2xlarge → adequate resources)<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">RCA Report - mis-prod-sg prometheus down (Sept 22, 2025)</a></em><br><br>
+                        ✅ <strong>Prometheus downtime eliminated</strong> - Resolved OOMKilled errors by upgrading instance type (m5a.2xlarge → adequate resources)<br><br>
 
-                        ✅ <strong>EFS mount failures resolved</strong> - Fixed NFS port 2049 security group rules & updated EFS utilities configuration<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">RCA Report - Unable to attach EFS to pod (Sept 11, 2025)</a></em><br><br>
+                        ✅ <strong>EFS mount failures resolved</strong> - Fixed NFS port 2049 security group rules & updated EFS utilities configuration<br><br>
 
-                        ✅ <strong>Prometheus PVC storage expanded</strong> - Resolved "PVC full" issue in Singapore region following runbook<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">RCA Report - Prometheus PVC full in SG (Oct 22, 2025)</a></em><br><br>
+                        ✅ <strong>Prometheus PVC storage expanded</strong> - Resolved "PVC full" issue in Singapore region following runbook<br><br>
 
-                        ✅ <strong>ECR pull authentication implemented</strong> - Resolved QPS exceeded errors with authenticated Docker Hub users<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">RCA Report - ECR Pull QPS Exceeded (Sept 8, 2025)</a></em>
+                        ✅ <strong>ECR pull authentication implemented</strong> - Resolved QPS exceeded errors with authenticated Docker Hub users
                     </div>
                 </div>
 
                 <div class="enhancement-card">
                     <div class="enhancement-title">Security Enhancements</div>
                     <div class="enhancement-description">
-                        ✅ <strong>CVE-2022-41742 patched</strong> - NGINX Ingress upgraded to v4.12.1 (from v4.2.6) with all security patches<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">RCA Report - Nginx Vulnerability Disclosure (Oct 14, 2025)</a></em><br><br>
+                        ✅ <strong>CVE-2022-41742 patched</strong> - NGINX Ingress upgraded to v4.12.1 (from v4.2.6) with all security patches<br><br>
 
-                        ✅ <strong>ModSecurity WAF deployment</strong> - Implemented new "mis-enhance" flavor with OWASP Core Rule Set<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">RCA Report - ModSecurity Module Implementation (Sept 2, 2025)</a></em><br><br>
+                        ✅ <strong>ModSecurity WAF deployment</strong> - Implemented new "mis-enhance" flavor with OWASP Core Rule Set<br><br>
 
-                        ✅ <strong>RBAC hardening</strong> - Removed unexpected kubectl edit access, restricted to view-only for developers<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">RCA Report - Developer kubectl Edit Access (Oct 16, 2025)</a></em><br><br>
+                        ✅ <strong>RBAC hardening</strong> - Removed unexpected kubectl edit access, restricted to view-only for developers<br><br>
 
-                        ✅ <strong>Endpoint security</strong> - Blocked sensitive actuator/prometheus paths with refined NGINX server-snippets<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">RCA Report - Prometheus Endpoint Security (Aug 26, 2025)</a></em>
+                        ✅ <strong>Endpoint security</strong> - Blocked sensitive actuator/prometheus paths with refined NGINX server-snippets
                     </div>
                 </div>
 
                 <div class="enhancement-card">
                     <div class="enhancement-title">Performance & Network Optimizations</div>
                     <div class="enhancement-description">
-                        ✅ <strong>HTTP/2 support enabled</strong> - New ingress module with HTTP/2 for improved performance<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">RCA Report - HTTP Methods & Headers in Ingress (Oct 31, 2025)</a></em><br><br>
+                        ✅ <strong>HTTP/2 support enabled</strong> - New ingress module with HTTP/2 for improved performance<br><br>
 
-                        ✅ <strong>CPU limit optimization</strong> - Dynamic CPU allocation to handle spikes without throttling<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">RCA Report - CPU Limit Removal Effects (Oct 15, 2025)</a></em><br><br>
+                        ✅ <strong>CPU limit optimization</strong> - Dynamic CPU allocation to handle spikes without throttling<br><br>
 
-                        ✅ <strong>VPC Endpoints deployed</strong> - S3 and DynamoDB endpoints for reduced latency and secure connectivity<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">RCA Report - S3 VPC Endpoint Missing (Sept 19, 2025)</a></em>
+                        ✅ <strong>VPC Endpoints deployed</strong> - S3 and DynamoDB endpoints for reduced latency and secure connectivity
                     </div>
                 </div>
 
                 <div class="enhancement-card">
                     <div class="enhancement-title">Infrastructure Optimization & Management</div>
                     <div class="enhancement-description">
-                        ✅ <strong>620 Total Resources</strong> managed via Facets Control Plane<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: Verified via <code>raptor get resources -p default-stack</code> - actual count from infrastructure</em><br><br>
+                        ✅ <strong>620 Total Resources</strong> managed via Facets Control Plane<br><br>
 
-                        ✅ <strong>19 Node Pools</strong> across multiple environments for workload isolation (prodsg, prodeu, prodmum, springboot, jenkins-agent, etc.)<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: Verified via <code>raptor get resources -p default-stack | grep kubernetes_node_pool</code></em><br><br>
+                        ✅ <strong>19 Node Pools</strong> across multiple environments for workload isolation (prodsg, prodeu, prodmum, springboot, jenkins-agent, etc.)<br><br>
 
-                        ✅ <strong>VPC Endpoints</strong> - S3 and DynamoDB endpoints deployed for secure private connectivity<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: <a href="https://abhishub-12.github.io/RCA-REPORTS/2025/November/RCA_Report_20251104_111105.html" target="_blank">RCA Report - S3 VPC Endpoint (Sept 19, 2025)</a></em><br><br>
+                        ✅ <strong>VPC Endpoints</strong> - S3 and DynamoDB endpoints deployed for secure private connectivity<br><br>
 
-                        ✅ <strong>Kubecost infrastructure</strong> - Deployed for cost visibility and monitoring<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: Verified - kubecost helm chart, node pool, and k8s resources in default-stack</em><br><br>
+                        ✅ <strong>Kubecost infrastructure</strong> - Deployed for cost visibility and monitoring<br><br>
 
-                        ✅ <strong>Instance type optimization</strong> - Multiple families per workload (t3a, r5a, m5a)<br>
-                        <em style="font-size: 0.85em; color: #666;">Source: Verified node pool configurations in infrastructure</em>
+                        ✅ <strong>Instance type optimization</strong> - Multiple families per workload (t3a, r5a, m5a)
                     </div>
                 </div>
             </div>
